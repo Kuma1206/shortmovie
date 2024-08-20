@@ -1,0 +1,58 @@
+.mainbox1 {
+  display: flex;
+  flex-direction: column; /* 縦方向に並べる */
+  align-items: center;
+  background-color: rgba(10, 10, 10, 0.2);
+  width: 100%;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: relative; /* 絶対位置指定を解除 */
+}
+
+.shokaiarea {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px; /* これで下にスペースを作る */
+}
+
+.area1 {
+  display: flex;
+  margin: 5px 0px;
+}
+
+.syokai1 {
+  font-size: 14px;
+}
+
+.episodearea1 {
+  margin: 0px 0px 10px 0px;
+}
+
+.episodename {
+  padding-left: 10px;
+}
+
+.saisei {
+  width: 100%;
+  height: 30px;
+  background-color: #fff;
+  color: #000;
+  border-radius: 5px;
+  margin: 5px 0;
+}
+
+.moviebox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(168, 172, 172);
+  width: 30%;
+  height: 60px;
+  border-radius: 5px;
+}
+
+.episodebox {
+  width: 100%;
+  margin-top: 20px; /* 上にスペースを作る */
+}
