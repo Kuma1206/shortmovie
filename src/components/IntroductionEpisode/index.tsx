@@ -37,6 +37,16 @@ const IntroductionEpisode = () => {
               紹介文ああああああああああああああああああああああああああああああああああああああああああああああああああ
             </div>
           </div>
+
+          <div className={styles.episodearea1}>
+            <div className={styles.area1}>
+              <div className={styles.moviebox}>movie</div>
+              <p className={styles.episodename}>Episonde1</p>
+            </div>
+            <div className={styles.syokai1}>
+              紹介文ああああああああああああああああああああああああああああああああああああああああああああああああああ
+            </div>
+          </div>
         </div>
       </main>
     </>
