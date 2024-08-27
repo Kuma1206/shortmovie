@@ -70,6 +70,18 @@
   font-size: 80px;
 }
 
+.pimagebox2 {
+  position: relative;
+  top:20px;
+  left: 20px;
+  width: 50%; // 幅を100%に設定
+  height: auto; // 高さを自動調整
+  max-width: 150px; // 最大幅を設定（必要に応じて調整）
+  max-height: 150px; // 最大高さを設定（必要に応じて調整）
+  object-fit: cover; // 画像をボックス内に収める
+  border-radius: 50%; // 丸い形にする（必要に応じて）
+}
+
 .pbox {
   display: flex;
   justify-content: start;

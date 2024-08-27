@@ -1,0 +1,9 @@
+.link {
+  display: block; /* ブロック要素にする */
+  text-decoration: none; /* 下線を削除 */
+  color: inherit; /* テキスト色を継承 */
+}
+
+.link:hover {
+  text-decoration: underline; /* ホバー時に下線を追加 */
+}

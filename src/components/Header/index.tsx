@@ -1,13 +1,33 @@
-import React from "react";
+import { useState } from "react";
+import { useAuth } from "../../context/auth";
+import { login } from "../../lib/auth";
 import styles from "./style.module.scss";
+import Link from "next/link";
+import UserMenu from "../UserMenu.tsx/index";
 
 const Header = () => {
+  const user = useAuth();
+  const [waiting, setWaiting] = useState<boolean>(false);
+
+  const signIn = () => {
+    setWaiting(true);
+
+    login()
+      .catch((error) => {
+        console.error(error?.code);
+      })
+      .finally(() => {
+        setWaiting(false);
+      });
+  };
+
   return (
     <ul className={styles.menubox}>
-      <li>ロゴ</li>
-      <li>メニュー1</li>
-      <li>メニュー2</li>
-      <li>メニュー3</li>
+      <Link href="/">
+        <li className={styles.logo}>ロゴ</li>
+      </Link>
+      <div className={styles.login}>{user === null && !waiting && <p onClick={signIn}>ログイン</p>}</div>
+      <div className={styles.icon}>{user && <UserMenu />} </div>
     </ul>
   );
 };

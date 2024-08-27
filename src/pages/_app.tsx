@@ -1,6 +1,14 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
+import { AuthProvider } from "../context/auth";
 
-export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
+function MyApp({ Component, pageProps }: AppProps) {
+  return (
+    // ここに設置して全体の親にします
+    <AuthProvider>
+      <Component {...pageProps} /> 
+    </AuthProvider>
+  );
 }
+
+export default MyApp;
