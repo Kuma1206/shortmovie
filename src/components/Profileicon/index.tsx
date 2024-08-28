@@ -5,7 +5,7 @@ import styles from "./style.module.scss";
 import Link from "next/link";
 import UserMenu from "../UserMenu/index";
 
-const Header = () => {
+const ProfileIcon = () => {
   const user = useAuth();
   const [waiting, setWaiting] = useState<boolean>(false);
 
@@ -23,9 +23,6 @@ const Header = () => {
 
   return (
     <ul className={styles.menubox}>
-      <Link href="/">
-        <li className={styles.logo}>ロゴ</li>
-      </Link>
       <div className={styles.login}>
         {user === null && !waiting && <p onClick={signIn}>ログイン</p>}
       </div>
@@ -34,4 +31,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default ProfileIcon;

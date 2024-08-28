@@ -5,10 +5,9 @@ import { useState } from "react";
 import { useAuth } from "../../context/auth";
 import { login } from "../../lib/auth";
 import Link from "next/link";
-import UserMenu from "../UserMenu.tsx/index";
+import UserMenu from "../UserMenu/index";
 
-
-const Header = () => {
+const Cheader = () => {
   const user = useAuth();
   const [waiting, setWaiting] = useState<boolean>(false);
 
@@ -37,4 +36,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default Cheader;

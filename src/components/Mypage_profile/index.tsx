@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import styles from "./style.module.scss";
-import IcBaselineAccountBox from "@/components/Profileimage"; // デフォルトの画像コンポーネント
-import Link from "next/link";
-import { uploadProfileImage } from "../../firebase/client"; // 画像アップロード関数をインポート
+import IcBaselineAccountBox from "@/components/Profileimage";
+import { uploadProfileImage } from "../../firebase/client";
 import { doc, setDoc, getDoc } from "firebase/firestore";
-import { auth, db } from "../../firebase/client"; // Firebaseの初期化ファイルからインポート
+import { auth, db } from "../../firebase/client";
+import UserMenu2 from "../UserMenu2";
+import { useRouter } from "next/router";
 
 const Mypage_profile = () => {
   const [profileImage, setProfileImage] = useState<string | null>(null);
+  const router = useRouter(); // useRouter フックを使ってルーターを取得
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -20,26 +22,29 @@ const Mypage_profile = () => {
       }
     };
 
-    fetchUserData();
-  }, []);
+    // ユーザーがログインしているか確認
+    if (auth.currentUser) {
+      router.push("/mypage"); // ログインしている場合、/mypage にリダイレクト
+    } else {
+      fetchUserData();
+    }
+  }, [router]);
 
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.target.files?.[0];
-    console.log("選択されたファイル:", file); // 選択されたファイルをコンソールに表示
+    console.log("選択されたファイル:", file);
 
     if (file) {
       try {
-        console.log("アップロードを開始します:", file.name); // アップロード開始のログ
-        const imageUrl = await uploadProfileImage(file); // 画像をアップロードし、URLを取得
-        console.log("画像のアップロードに成功:", imageUrl); // アップロード成功時のURLを表示
-        setProfileImage(imageUrl); // 画像URLを状態に設定
+        console.log("アップロードを開始します:", file.name);
+        const imageUrl = await uploadProfileImage(file);
+        console.log("画像のアップロードに成功:", imageUrl);
+        setProfileImage(imageUrl);
 
-        // ユーザーのIDを取得
         const userId = auth.currentUser?.uid;
 
-        // Firestoreに画像URLを保存
         if (userId) {
           await setDoc(
             doc(db, "users", userId),
@@ -48,32 +53,44 @@ const Mypage_profile = () => {
           );
         }
       } catch (error) {
-        console.error("画像のアップロードに失敗しました:", error); // エラーログ
+        console.error("画像のアップロードに失敗しました:", error);
       }
     } else {
-      console.log("ファイルが選択されていません。"); // ファイルが選択されていない場合のログ
+      console.log("ファイルが選択されていません。");
     }
+  };
+
+  const handleClick = () => {
+    document.getElementById("fileInput")?.click();
   };
 
   return (
     <>
       <main className={styles.mainbox1}>
         <div className={styles.pbox}>
-          <p
-            className={styles.pimage}
-            onClick={() => document.getElementById("fileInput")?.click()}
-          >
-            {profileImage ? (
-              <img
-                src={profileImage}
-                alt="Profile"
-                className={styles.pimagebox2}
-              />
-            ) : (
-              // profileImageが存在しない場合のみpimageboxを表示
-              <IcBaselineAccountBox className={styles.pimagebox} />
-            )}
-          </p>
+          {/* ユーザーがログインしていない場合のみpimageを表示 */}
+          {!auth.currentUser && (
+            <p className={styles.pimage} onClick={handleClick}>
+              {profileImage ? (
+                <img
+                  src={profileImage}
+                  alt="Profile"
+                  className={styles.pimagebox2}
+                />
+              ) : (
+                <IcBaselineAccountBox className={styles.pimagebox} />
+              )}
+            </p>
+          )}
+          <div className={styles.iconbox}>
+            {auth.currentUser && <UserMenu2 onClick={handleClick} />}
+          </div>
+          {/* ユーザーがログインしている場合のみptextを表示 */}
+          {auth.currentUser && (
+            <div className={styles.psheet}>
+              <p className={styles.ptext}>NAME</p>
+            </div>
+          )}
           <input
             type="file"
             accept="image/*"
@@ -81,10 +98,6 @@ const Mypage_profile = () => {
             style={{ display: "none" }}
             onChange={handleImageUpload}
           />
-          <div className={styles.psheet}>
-            <p className={styles.ptext}>name：</p>
-            <p className={styles.ptext}>自己紹介：</p>
-          </div>
         </div>
       </main>
     </>
