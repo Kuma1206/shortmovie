@@ -18,13 +18,13 @@
 .line {
   width: 80%;
   height: 2px;
-  background-color: #fff;
+  background-color: #000;
   transition: all 0.3s ease;
   position: relative;
 }
 
 .lineOpen {
-  background-color: #fff; /* 開いた時の色を透明に */
+  background-color: #000; /* 開いた時の色を透明に */
 }
 
 .lineClose {
@@ -50,7 +50,7 @@
 
 .nav {
   position: absolute;
-  top: 25px; /* ハンバーガーメニューの下に表示 */
+  top: 40px; /* ハンバーガーメニューの下に表示 */
   left: -10px;
   background-color: #333;
   width: 500%;

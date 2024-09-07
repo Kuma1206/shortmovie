@@ -1,12 +1,14 @@
 .tabmenu {
   top: 1000px;
+  background-color: #fff;
+  height: 100vh;
 }
 
 .tabbox {
   display: flex;
   justify-content: space-around;
-  background-color: rgb(70, 68, 68);
-  
+  background-color: #fff;
+  // border-bottom: 0.1px rgb(218, 214, 214);
 }
 
 .menubox {
@@ -15,6 +17,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgb(56, 55, 55);
-
+  background-color: #fff;
+  color: #000;
+  border-bottom: 2px solid rgb(235, 235, 235);
 }

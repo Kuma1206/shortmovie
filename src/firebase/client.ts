@@ -6,7 +6,9 @@ import { getAuth } from 'firebase/auth';
 import { getFunctions } from 'firebase/functions';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage"; 
 
+const firebaseConfig = {
 
+};
 
 if (!getApps()?.length) {
   // Firebaseアプリの初期化

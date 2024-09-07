@@ -11,7 +11,7 @@ const Tab3 = () => {
     <div className={styles.tabmenu}>
       <Tabs>
         <TabList className={styles.tabbox}>
-          <Tab className={styles.menubox}>動画一覧</Tab>
+          <Tab className={styles.menubox}>Myコンテンツ</Tab>
           <Tab className={styles.menubox}>新規作成</Tab>
           <Tab className={styles.menubox}>一時保存</Tab>
         </TabList>

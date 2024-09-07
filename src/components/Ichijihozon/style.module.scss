@@ -14,3 +14,18 @@
   justify-content: center;
   align-items: center;
 }
+
+.mainbox {
+  color: black;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.movebox {
+  background-color: rgb(97, 97, 97);
+  width: 33.3%;
+  height: 150px;
+  border-radius: 1px;
+  border: 1px solid #fff;
+}
