@@ -16,7 +16,7 @@
 }
 
 .mainbox {
-  color: black;
+  color: rgb(250, 243, 243);
   display: flex;
   flex-wrap: wrap;
   justify-content: start;
@@ -25,11 +25,33 @@
 }
 
 .movebox {
-  background-color: rgb(97, 97, 97);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: none;
   width: 23%;
-  padding-top: 22%; /* 横幅と同じ値を設定 */
+  aspect-ratio: 1 / 1; /* 正方形の比率を維持 */
   margin: 10px;
   position: relative;
-  // height: 150px;
   border-radius: 5px;
+  border-width: 1px;
+  border-color: aliceblue;
+  border-style: solid;
 }
+
+.movebox:hover {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: none;
+  width: 23%;
+  aspect-ratio: 1 / 1; /* 正方形の比率を維持 */
+  margin: 10px;
+  position: relative;
+  border-radius: 5px;
+  border-width: 1px;
+  border-color: aliceblue;
+  border-style: solid;
+  background-color: rgb(24, 24, 24);
+}
+

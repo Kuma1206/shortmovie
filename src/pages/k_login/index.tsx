@@ -28,7 +28,7 @@ const Login = () => {
         <h2>管理画面ログイン</h2>
         <form onSubmit={handleLogin} className={styles.formbox}>
           <div className={styles.mailbox}>
-            <label className={styles.label1}>メールアドレス</label>
+            <label className={styles.label1}>ID</label>
             <input
               type="email"
               value={email}

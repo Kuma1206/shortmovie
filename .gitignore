@@ -34,3 +34,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+
+# Firebase service account key - this should not be committed to the repository
+config/serviceAccountKey.json
+
+# firebase kye
+src/firebase/client.ts

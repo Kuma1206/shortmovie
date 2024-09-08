@@ -5,6 +5,7 @@ import { onAuthStateChanged, User } from "firebase/auth"; // Firebase User 型�
 import { getFirestore, doc, getDoc } from "firebase/firestore"; // Firestore のインポート
 import styles from "./style.module.scss";
 import Kheader from "@/components/K_header";
+import AdminRoute from "../../components/AdminRoute";
 
 const KanrigamenPage = () => {
   // Firebase.User | null 型に変更
@@ -54,12 +55,12 @@ const KanrigamenPage = () => {
 
   return (
     <>
-      <header>
-        <Kheader />
-      </header>
-      <main className={styles.mainbox}>
-
-      </main>
+      <AdminRoute>
+        <header>
+          <Kheader />
+        </header>
+        <main className={styles.mainbox}></main>
+      </AdminRoute> 
     </>
   );
 };
