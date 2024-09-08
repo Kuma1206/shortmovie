@@ -1,0 +1,35 @@
+.tabmenu {
+  top: 1000px;
+}
+
+.tabbox {
+  display: flex;
+  justify-content: space-around;
+}
+
+.menubox {
+  width: 100%;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mainbox {
+  color: black;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: start;
+  margin-top: 20px;
+  background-color: #0a0a0a;
+}
+
+.movebox {
+  background-color: rgb(97, 97, 97);
+  width: 23%;
+  padding-top: 22%; /* 横幅と同じ値を設定 */
+  margin: 10px;
+  position: relative;
+  // height: 150px;
+  border-radius: 5px;
+}

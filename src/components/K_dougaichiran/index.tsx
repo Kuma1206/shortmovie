@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./style.module.scss";
 import Link from "next/link";
 
-const Dougaichiran = () => {
+const K_dougaichiran = () => {
   return (
     <div className={styles.mainbox}>
       <div className={styles.movebox}>テスト2</div>
@@ -16,4 +16,4 @@ const Dougaichiran = () => {
   );
 };
 
-export default Dougaichiran;
+export default K_dougaichiran;
