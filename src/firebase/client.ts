@@ -7,12 +7,7 @@ import { getFunctions } from 'firebase/functions';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage"; 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyC12os0qCgyZXVuQrJBZtiwJ-bBFGo94rE",
-  authDomain: "osmproject-34e1b.firebaseapp.com",
-  projectId: "osmproject-34e1b",
-  storageBucket: "osmproject-34e1b.appspot.com",
-  messagingSenderId: "668370771950",
-  appId: "1:668370771950:web:a6b1652219e36aeb9078ff"
+
 };
 
 if (!getApps()?.length) {
