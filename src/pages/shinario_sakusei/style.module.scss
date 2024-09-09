@@ -22,12 +22,13 @@
   height: 100px;
   padding: 10px;
   position: absolute; /* position: absolute に変更 */
-  bottom: 0px; /* moviebox の下に配置 */
+  bottom: 40px; /* moviebox の下に配置 */
   z-index: 1001; /* moviebox よりも低い値を設定 */
   // box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .shokaiarea {
+  bottom: 100px;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -71,6 +72,8 @@
   justify-content: center;
   width: 100%;
   color: #fff;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
 }
 
 .serihubox2 {
@@ -88,15 +91,18 @@
   width: 70px;
   height: 30px;
   border-radius: 5px;
-  border: none;
-  background-color: #d1cfcf;
-  color: #000;
+  border: 2px solid #000; /* 枠を表示させる */
+  background-color: rgba(0, 0, 0, 0.3);
+  color: #dbdada;
   font-size: 16px;
   font-weight: 400;
+  z-index: 9999;
 }
 
 .hozonbox {
   display: flex;
   justify-content: center;
   margin: 10px;
+  width: 70px;
+  z-index: 1001;
 }

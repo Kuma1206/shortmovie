@@ -33,11 +33,12 @@ const Odaiidhiran = () => {
           key={index}
           className={styles.movebox}
         >
-          <div>
+          <div style={{ width: "100%", height: "100%", overflow: "hidden" }}>
             <video
               controlsList="nodownload"
               width="100%"
-              style={{ pointerEvents: "none" }}
+              height="100%"
+              style={{ pointerEvents: "none", objectFit: "cover" }} // はみ出た部分を隠し、枠内に収める
             >
               <source src={videoSrc} type="video/mp4" />
               お使いのブラウザは動画タグをサポートしていません。

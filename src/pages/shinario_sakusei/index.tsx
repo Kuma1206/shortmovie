@@ -12,13 +12,16 @@ const Shinario_sakusei = () => {
     <>
       <div className={styles.moviebox}>
         {videoUrl ? ( // 動画URLが存在する場合のみ再生
-          <video controls width="100%">
+          <video controls width="100%" controlsList="nodownload">
             <source src={videoUrl as string} type="video/mp4" />
             お使いのブラウザは動画タグをサポートしていません。
           </video>
         ) : (
           <p>動画が選択されていません。</p>
         )}
+      </div>
+      <div className={styles.hozonbox}>
+        <button className={styles.hozon}>保存</button>
       </div>
       <Link href="/seisaku_page">
         <WeuiClose2Outlined className={styles.backbutton} />
@@ -33,9 +36,6 @@ const Shinario_sakusei = () => {
               placeholder="太郎：こんにちは！"
             />
             <p className={styles.saisei}>→</p>
-          </div>
-          <div className={styles.hozonbox}>
-            <button className={styles.hozon}>保存</button>
           </div>
         </div>
       </main>
