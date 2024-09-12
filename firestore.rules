@@ -1,0 +1,19 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ユーザーは自分のドキュメントにのみアクセス可能
+    match /users/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // 認証済みユーザーは videos を閲覧可能、ただし書き込みはアップロードしたユーザーのみ許可
+    match /videos/{videoId} {
+      allow read: if request.auth != null;
+
+      // 書き込みは、リクエストの uploaderId が認証されたユーザーの uid と一致する場合に許可
+      allow write: if request.auth != null && request.resource.data.uploaderId == request.auth.uid;
+    }
+  }
+}
+

@@ -22,7 +22,7 @@
   height: 100px;
   padding: 10px;
   position: absolute; /* position: absolute に変更 */
-  bottom: 40px; /* moviebox の下に配置 */
+  bottom: 50px; /* moviebox の下に配置 */
   z-index: 1001; /* moviebox よりも低い値を設定 */
   // box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
@@ -105,4 +105,69 @@
   margin: 10px;
   width: 70px;
   z-index: 1001;
+}
+
+.subtitleDisplay {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column;
+  font-size: 25px;
+  background-color: rgba(0, 0, 0, 0.5);
+  margin: 10px;
+  padding: 10px;
+  min-height: 40px;
+  z-index: 2000;
+  bottom: 200px; /* 下から20pxの位置に表示 */
+  position: absolute; /* 位置を調整するためにpositionをabsoluteに設定 */
+}
+
+.startbox {
+  width: 30px;
+  display: flex;
+  // padding-left: 15px;
+}
+
+.endbox {
+  width: 30px;
+  display: flex;
+  // padding-left: 15px;
+}
+
+.subtitleItem {
+  position: relative;
+}
+
+.deleteButton {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 20px;
+  width: 15px;
+  height: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.editableSubtitleInput {
+  width: 100%;
+  font-size: 18px;
+  padding: 5px;
+}
+
+.timebox {
+  display: flex;
+  font-size: 13px;
+  align-items: center;
+  margin: 0px 10px 10px 10px;
+}
+
+.tbox {
+  display: flex;
 }

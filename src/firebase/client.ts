@@ -5,7 +5,12 @@ import { getAuth } from 'firebase/auth';
 import { getFunctions } from 'firebase/functions';
 
 const firebaseConfig = {
-
+  apiKey: "AIzaSyC12os0qCgyZXVuQrJBZtiwJ-bBFGo94rE",
+  authDomain: "osmproject-34e1b.firebaseapp.com",
+  projectId: "osmproject-34e1b",
+  storageBucket: "osmproject-34e1b.appspot.com",
+  messagingSenderId: "668370771950",
+  appId: "1:668370771950:web:a6b1652219e36aeb9078ff"
 };
 
 if (getApps().length === 0) {
@@ -17,7 +22,7 @@ if (getApps().length === 0) {
 export const db = getFirestore();
 export const storage = getStorage();
 export const auth = getAuth();
-export const functions = getFunctions(); // 必要に応じてリージョン指定も可能
+export const functions = getFunctions(undefined, 'asia-northeast1'); // リージョン指定
 
 /**
  * 動画をStorageから削除し、対応するFirestoreのドキュメントも削除する
