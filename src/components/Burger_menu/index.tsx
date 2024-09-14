@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styles from "./style.module.scss";
+import Link from "next/link";
 
 const HamburgerMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,13 +32,13 @@ const HamburgerMenu = () => {
         <nav className={styles.nav}>
           <ul>
             <li>
-              <a href="/">📁Movie</a>
+              <Link href="/">📁Movie</Link>
             </li>
             <li>
-              <a href="/about">📁Voive</a>
+              <Link href="/about">📁Voice</Link>
             </li>
             <li>
-              <a href="/services">📁Fhoto</a>
+              <Link href="/services">📁Photo</Link>
             </li>
           </ul>
         </nav>

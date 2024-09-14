@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import styles from "./style.module.scss";
 import IcBaselineAccountBox from "@/components/Profileimage";
 import { uploadProfileImage } from "../../firebase/client";
@@ -72,10 +73,12 @@ const Mypage_profile = () => {
           {!auth.currentUser && (
             <p className={styles.pimage} onClick={handleClick}>
               {profileImage ? (
-                <img
+                <Image
                   src={profileImage}
                   alt="Profile"
                   className={styles.pimagebox2}
+                  width={100} // 必須の width
+                  height={100} // 必須の height
                 />
               ) : (
                 <IcBaselineAccountBox className={styles.pimagebox} />
