@@ -13,6 +13,8 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
+//テスト
+
 if (getApps().length === 0) {
   // Firebaseアプリの初期化
   initializeApp(firebaseConfig);
