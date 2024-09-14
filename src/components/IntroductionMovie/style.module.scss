@@ -1,0 +1,50 @@
+.moviebox {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  list-style: none;
+  background-color: rgb(139, 132, 132);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 30%;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.mainbox1 {
+  display: flex;
+  align-items: center;
+  background-color: rgba(10, 10, 10, 0.2);
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  position: absolute; /* position: absolute に変更 */
+  top: -10%; /* moviebox の下に配置 */
+  z-index: 999; /* moviebox よりも低い値を設定 */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.shokaiarea {
+  width: 100%;
+}
+
+.saisei {
+  width: 100%;
+  height: 30px;
+  background-color: #fff;
+  color: #000;
+  border-radius: 5px;
+  margin: 5px 0px;
+}
+
+.backbutton {
+  position: fixed; /* または absolute */
+  background-color: none;
+  width: 30px;
+  height: 30px; /* 高さも設定 */
+  top: 10px; /* 上からの距離 */
+  right: 10px; /* 右からの距離 */
+  z-index: 1001; /* 最前面に表示 */
+}

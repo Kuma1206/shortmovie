@@ -1,0 +1,82 @@
+.moviebox {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  list-style: none;
+  background-color: rgb(75, 73, 73);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.mainbox1 {
+  display: flex;
+  justify-content: center;
+  align-items: end;
+  background-color: none;
+  width: 100%;
+  height: 100px;
+  padding: 10px;
+  position: absolute; /* position: absolute に変更 */
+  bottom: 0px; /* moviebox の下に配置 */
+  z-index: 1001; /* moviebox よりも低い値を設定 */
+  // box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.shokaiarea {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.saisei {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  margin: 0px 10px;
+  background-color: none;
+}
+
+.backbutton {
+  position: fixed; /* または absolute */
+  background-color: none;
+  width: 30px;
+  height: 30px; /* 高さも設定 */
+  top: 10px; /* 上からの距離 */
+  right: 10px; /* 右からの距離 */
+  z-index: 1001; /* 最前面に表示 */
+}
+
+.inputbox {
+  display: flex;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+
+.serihubox1 {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  color: #fff;
+}
+
+.hozon {
+  width: 70px;
+  height: 30px;
+  border-radius: 5px;
+  border: none;
+  background-color: #000;
+}
+
+.hozonbox {
+  display: flex;
+  justify-content: center;
+  margin: 10px;
+}

@@ -1,0 +1,162 @@
+.moviebox {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  list-style: none;
+  background-color: #000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 1000; /* マイクアイコンが上に来るよう調整 */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.mainbox1 {
+  display: flex;
+  justify-content: center;
+  align-items: end;
+  width: 100%;
+  height: 100px;
+  padding: 10px;
+  position: absolute;
+  bottom: 40px;
+  z-index: 999; /* マイクアイコンより低い */
+}
+
+.shokaiarea {
+  bottom: 100px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.saisei {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  margin: 0px 10px;
+  background-color: none;
+}
+
+.backbutton {
+  position: fixed;
+  width: 30px;
+  height: 30px;
+  top: 10px;
+  right: 10px;
+  z-index: 1001;
+}
+
+.inputbox {
+  display: flex;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.serihubox {
+  border-radius: 50px;
+  padding: 10px;
+  height: 40px;
+  width: 90%;
+}
+
+.serihubox1 {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+}
+
+.serihubox2 {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  color: #fff;
+  background-color: #1d1c1c;
+  border-radius: 50px;
+  padding: 10px;
+  border: none;
+}
+
+.hozon {
+  width: 70px;
+  height: 30px;
+  border-radius: 5px;
+  border: 2px solid #000;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: #dbdada;
+  font-size: 16px;
+  font-weight: 400;
+  z-index: 999;
+}
+
+.hozonbox {
+  display: flex;
+  justify-content: center;
+  margin: 10px;
+  width: 70px;
+  z-index: 999;
+}
+
+
+//////
+.microphoneIconContainer {
+  position: fixed;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1001; /* 他の要素より上に表示 */
+}
+
+.microphoneIcon {
+  font-size: 48px;
+  color: red;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.microphoneIcon:hover {
+  transform: scale(1.1);
+}
+
+/* 録音中のスタイル */
+.recordingIndicator {
+  position: relative;
+  z-index: 1002; /* 確実に前面に表示されるように調整 */
+  pointer-events: auto; /* クリック可能 */
+}
+
+.recordingIndicator::before {
+  content: '';
+  position: absolute;
+  top: -15px;
+  left: -15px;
+  width: 68px;
+  height: 68px;
+  border: 5px solid rgba(255, 0, 0, 0.7);
+  border-radius: 50%;
+  animation: pulse 1.5s infinite ease-in-out;
+  z-index: 1002; /* マイクアイコンと同じく前面 */
+}
+
+/* 点滅アニメーション */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+}

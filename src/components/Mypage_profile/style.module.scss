@@ -1,0 +1,117 @@
+.mainbox1 {
+  display: flex;
+  flex-direction: column; /* 縦方向に並べる */
+  align-items: center;
+  background-color: #fff;
+  width: 100%;
+  top: 40px;;
+  padding: 10px;
+  // box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: relative; /* 絶対位置指定を解除 */
+  z-index: 999;
+}
+
+.shokaiarea {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px; /* これで下にスペースを作る */
+}
+
+.area1 {
+  display: flex;
+  margin: 5px 0px;
+}
+
+.syokai1 {
+  font-size: 14px;
+}
+
+.episodearea1 {
+  margin: 0px 0px 10px 0px;
+}
+
+.episodename {
+  padding-left: 10px;
+}
+
+.saisei {
+  width: 100%;
+  height: 30px;
+  background-color: #fff;
+  color: #000;
+  border-radius: 5px;
+  margin: 5px 0;
+}
+
+.moviebox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(168, 172, 172);
+  width: 30%;
+  height: 60px;
+  border-radius: 5px;
+}
+
+.episodebox {
+  width: 100%;
+  margin-top: 20px; /* 上にスペースを作る */
+}
+
+.pimage {
+  height: 100px;
+  font-size: 60px;
+  padding: 0;
+  margin: 0;
+}
+
+.pimagebox {
+  position: relative;
+  top:20px;
+  left: 20px;
+  font-size: 80px;
+}
+
+.pimagebox2 {
+  position: relative;
+  top:20px;
+  left: 20px;
+  width: 50%; // 幅を100%に設定
+  height: auto; // 高さを自動調整
+  max-width: 150px; // 最大幅を設定（必要に応じて調整）
+  max-height: 150px; // 最大高さを設定（必要に応じて調整）
+  object-fit: cover; // 画像をボックス内に収める
+  border-radius: 50%; // 丸い形にする（必要に応じて）
+}
+
+.pbox {
+  display: flex;
+  justify-content: start;
+  width: 100%;
+}
+
+.ptext {
+  width: 50px;
+  padding-left: 20px;
+  display: flex;
+  justify-content: end;
+  font-size: 20px;
+  color: #000;
+}
+
+.psheet {
+  position: relative;
+  width: 100px;
+  display: flex;
+  flex-direction: column;
+  padding-top: 10px;
+  left: 120px;
+  top: 20px;
+}
+
+.iconbox {
+  position: relative;
+  top: 20px;
+  left: 30px;
+}
