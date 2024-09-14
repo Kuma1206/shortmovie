@@ -1,4 +1,5 @@
 import { User } from "../../types/user";
+import Image from "next/image";
 import BlankText from "../BlankText";
 import styles from "./style.module.scss";
 
@@ -10,7 +11,7 @@ const UserCard = ({ user }: Props) => {
   return (
     <div className={styles.card}>
       <div className={styles.cover}>
-        {user.coverURL && <img src={user.coverURL} alt="" />}
+        {user.coverURL && <Image src={user.coverURL} alt="" />}
       </div>
       <div className={styles.content}>
         <div>
