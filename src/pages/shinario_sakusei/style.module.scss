@@ -160,3 +160,79 @@
     opacity: 0.8;
   }
 }
+////
+
+
+.errorMessage {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  color: #e91616;
+  background-color: rgba(231, 221, 221, 0.5);
+  border: 1px solid #ff0000;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  font-size: 16px;
+  text-align: center;
+  font-weight: bold;
+  position: fixed; /* 最上位に表示するための固定配置 */
+  top: 50%; /* 画面の中央に配置 */
+  left: 50%; /* 画面の中央に配置 */
+  transform: translate(-50%, -50%); /* 完全に中央揃え */
+  z-index: 9999; /* 高いz-indexを指定して最上位に表示 */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* 目立たせるために影を追加 */
+}
+
+.tojiru {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background-color: #9e9c9c;
+  border-radius: 5px;
+  color: #000;
+}
+
+.linkButton {
+  position: fixed; /* 固定位置にする */
+  bottom: 60px; /* 画面の下部に配置 */
+  left: 15%; /* 水平方向に中央配置 */
+  transform: translateX(-50%); /* 左右の中央に合わせる */
+  z-index: 9999; /* 最前面に表示するための z-index */
+  padding: 5px 10px; /* ボタンの内側に余白を設定 */
+  font-size: 16px; /* 文字サイズを設定 */
+  background-color: rgba(0, 0, 0, 0.5); /* ボタンの背景色 */
+  color: white; /* 文字色 */
+  border: none; /* ボーダーを消す */
+  border-radius: 5px; /* 角を丸くする */
+  cursor: pointer; /* ホバー時のカーソルを設定 */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5); /* ボタンにシャドウを追加 */
+  transition: background-color 0.3s ease; /* 背景色の変化にアニメーションを設定 */
+}
+
+.linkButton:hover {
+  background-color: #ff4500; /* ホバー時に背景色を変更 */
+}
+
+.hozonbutton {
+  position: fixed; /* 固定位置にする */
+  top: 10px; /* 画面の下部に配置 */
+  left: 10%; /* 水平方向に中央配置 */
+  transform: translateX(-50%); /* 左右の中央に合わせる */
+  z-index: 9999; /* 最前面に表示するための z-index */
+  padding: 5px 10px; /* ボタンの内側に余白を設定 */
+  font-size: 16px; /* 文字サイズを設定 */
+  background-color: rgba(0, 0, 0, 0.5); /* ボタンの背景色 */
+  color: white; /* 文字色 */
+  border: none; /* ボーダーを消す */
+  border-radius: 5px; /* 角を丸くする */
+  cursor: pointer; /* ホバー時のカーソルを設定 */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5); /* ボタンにシャドウを追加 */
+  transition: background-color 0.3s ease; /* 背景色の変化にアニメーションを設定 */
+}
+
+.hozonbutton:hover {
+  background-color: #413f3e; /* ホバー時に背景色を変更 */
+}
+
