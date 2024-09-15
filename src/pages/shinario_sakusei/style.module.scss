@@ -9,7 +9,7 @@
   left: 0;
   width: 100%;
   height: 100vh;
-  z-index: 1000; /* マイクアイコンが上に来るよう調整 */
+  z-index: 1000;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
@@ -17,12 +17,14 @@
   display: flex;
   justify-content: center;
   align-items: end;
+  background-color: none;
   width: 100%;
   height: 100px;
   padding: 10px;
-  position: absolute;
-  bottom: 40px;
-  z-index: 999; /* マイクアイコンより低い */
+  position: absolute; /* position: absolute に変更 */
+  bottom: 40px; /* moviebox の下に配置 */
+  z-index: 1001; /* moviebox よりも低い値を設定 */
+  // box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .shokaiarea {
@@ -43,12 +45,13 @@
 }
 
 .backbutton {
-  position: fixed;
+  position: fixed; /* または absolute */
+  background-color: none;
   width: 30px;
-  height: 30px;
-  top: 10px;
-  right: 10px;
-  z-index: 1001;
+  height: 30px; /* 高さも設定 */
+  top: 10px; /* 上からの距離 */
+  right: 10px; /* 右からの距離 */
+  z-index: 1001; /* 最前面に表示 */
 }
 
 .inputbox {
@@ -88,12 +91,12 @@
   width: 70px;
   height: 30px;
   border-radius: 5px;
-  border: 2px solid #000;
+  border: 2px solid #000; /* 枠を表示させる */
   background-color: rgba(0, 0, 0, 0.3);
   color: #dbdada;
   font-size: 16px;
   font-weight: 400;
-  z-index: 999;
+  z-index: 9999;
 }
 
 .hozonbox {
@@ -101,138 +104,5 @@
   justify-content: center;
   margin: 10px;
   width: 70px;
-  z-index: 999;
+  z-index: 1001;
 }
-
-
-//////
-.microphoneIconContainer {
-  position: fixed;
-  bottom: 50px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1001; /* 他の要素より上に表示 */
-}
-
-.microphoneIcon {
-  font-size: 48px;
-  color: red;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.microphoneIcon:hover {
-  transform: scale(1.1);
-}
-
-/* 録音中のスタイル */
-.recordingIndicator {
-  position: relative;
-  z-index: 1002; /* 確実に前面に表示されるように調整 */
-  pointer-events: auto; /* クリック可能 */
-}
-
-.recordingIndicator::before {
-  content: '';
-  position: absolute;
-  top: -15px;
-  left: -15px;
-  width: 68px;
-  height: 68px;
-  border: 5px solid rgba(255, 0, 0, 0.7);
-  border-radius: 50%;
-  animation: pulse 1.5s infinite ease-in-out;
-  z-index: 1002; /* マイクアイコンと同じく前面 */
-}
-
-/* 点滅アニメーション */
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-    opacity: 0.8;
-  }
-  50% {
-    transform: scale(1.2);
-    opacity: 0.5;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 0.8;
-  }
-}
-////
-
-
-.errorMessage {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  color: #e91616;
-  background-color: rgba(231, 221, 221, 0.5);
-  border: 1px solid #ff0000;
-  padding: 10px;
-  margin: 10px 0;
-  border-radius: 5px;
-  font-size: 16px;
-  text-align: center;
-  font-weight: bold;
-  position: fixed; /* 最上位に表示するための固定配置 */
-  top: 50%; /* 画面の中央に配置 */
-  left: 50%; /* 画面の中央に配置 */
-  transform: translate(-50%, -50%); /* 完全に中央揃え */
-  z-index: 9999; /* 高いz-indexを指定して最上位に表示 */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* 目立たせるために影を追加 */
-}
-
-.tojiru {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  background-color: #9e9c9c;
-  border-radius: 5px;
-  color: #000;
-}
-
-.linkButton {
-  position: fixed; /* 固定位置にする */
-  bottom: 60px; /* 画面の下部に配置 */
-  left: 15%; /* 水平方向に中央配置 */
-  transform: translateX(-50%); /* 左右の中央に合わせる */
-  z-index: 9999; /* 最前面に表示するための z-index */
-  padding: 5px 10px; /* ボタンの内側に余白を設定 */
-  font-size: 16px; /* 文字サイズを設定 */
-  background-color: rgba(0, 0, 0, 0.5); /* ボタンの背景色 */
-  color: white; /* 文字色 */
-  border: none; /* ボーダーを消す */
-  border-radius: 5px; /* 角を丸くする */
-  cursor: pointer; /* ホバー時のカーソルを設定 */
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5); /* ボタンにシャドウを追加 */
-  transition: background-color 0.3s ease; /* 背景色の変化にアニメーションを設定 */
-}
-
-.linkButton:hover {
-  background-color: #ff4500; /* ホバー時に背景色を変更 */
-}
-
-.hozonbutton {
-  position: fixed; /* 固定位置にする */
-  top: 10px; /* 画面の下部に配置 */
-  left: 10%; /* 水平方向に中央配置 */
-  transform: translateX(-50%); /* 左右の中央に合わせる */
-  z-index: 9999; /* 最前面に表示するための z-index */
-  padding: 5px 10px; /* ボタンの内側に余白を設定 */
-  font-size: 16px; /* 文字サイズを設定 */
-  background-color: rgba(0, 0, 0, 0.5); /* ボタンの背景色 */
-  color: white; /* 文字色 */
-  border: none; /* ボーダーを消す */
-  border-radius: 5px; /* 角を丸くする */
-  cursor: pointer; /* ホバー時のカーソルを設定 */
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5); /* ボタンにシャドウを追加 */
-  transition: background-color 0.3s ease; /* 背景色の変化にアニメーションを設定 */
-}
-
-.hozonbutton:hover {
-  background-color: #413f3e; /* ホバー時に背景色を変更 */
-}
-

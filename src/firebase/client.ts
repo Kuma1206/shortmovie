@@ -1,4 +1,4 @@
-import { initializeApp, getApps } from 'firebase/app';
+import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getFirestore, doc, deleteDoc } from 'firebase/firestore';
 import { getStorage, ref, deleteObject, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { getAuth } from 'firebase/auth';
@@ -20,11 +20,13 @@ if (getApps().length === 0) {
   initializeApp(firebaseConfig);
 }
 
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApp(); 
+
 // Firebase関連機能をエクスポート
-export const db = getFirestore();
-export const storage = getStorage();
-export const auth = getAuth();
-export const functions = getFunctions(); // 必要に応じてリージョン指定も可能
+export const db = getFirestore(app);
+export const storage = getStorage(app);
+export const auth = getAuth(app);
+export const functions = getFunctions(app); // 必要に応じてリージョン指定も可能
 
 // 画像をアップロードしてそのURLを返す関数を定義
 export const uploadProfileImage = async (file: File): Promise<string> => {
@@ -62,3 +64,5 @@ export const deleteVideoAndDocument = async (storagePath: string, firestoreDocPa
     throw error;
   }
 };
+
+export { app };

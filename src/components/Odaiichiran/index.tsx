@@ -27,7 +27,7 @@ const Odaiidhiran = () => {
       {videos.map((videoSrc, index) => (
         <Link
           href={{
-            pathname: "/shinario_sakusei",
+            pathname: "/onsei_sakusei2",
             query: { videoUrl: videoSrc }, // 動画URLをクエリパラメータとして渡す
           }}
           key={index}
