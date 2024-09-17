@@ -6,7 +6,15 @@ import Link from "next/link";
 import { FaMicrophone } from "react-icons/fa";
 import { getAuth } from "firebase/auth";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { getFirestore, doc, setDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  doc,
+  updateDoc,
+  getDoc,
+  setDoc,
+  addDoc,
+  collection,
+} from "firebase/firestore";
 import { app } from "@/firebase/client"; // Firebaseの初期化コードをインポート
 
 const auth = getAuth(app);
@@ -73,7 +81,6 @@ const Onsei_sakusei2 = () => {
     }
   };
 
-
   const stopRecording = () => {
     if (
       mediaRecorderRef.current &&
@@ -109,27 +116,27 @@ const Onsei_sakusei2 = () => {
       const audioFileName = `audio_${Date.now()}.wav`;
       const audioStorageRef = ref(
         storage,
-        `audio/${user.uid}/${audioFileName}`
+        `user_audio/${user.uid}/${audioFileName}`
       );
 
       // Firebase Storageに音声ファイルをアップロード
       const snapshot = await uploadBytes(audioStorageRef, audioBlob);
       const downloadURL = await getDownloadURL(snapshot.ref);
 
-      // Firestoreに動画URLと音声ファイルのURLを紐づける
-      const audioDocRef = doc(
+      // Firestoreに新しいドキュメントをユーザーUIDのサブコレクションに作成して保存する
+      const audioCollectionRef = collection(
         firestore,
-        `users/${user.uid}/audio`,
-        audioFileName
+        `user_audio/${user.uid}/audio`
       );
-      await setDoc(audioDocRef, {
-        videoUrl,
-        audioUrl: downloadURL,
-        userId: user.uid,
-        createdAt: new Date(),
+
+      await addDoc(audioCollectionRef, {
+        videoUrl, // ビデオのURL
+        audioUrl: downloadURL, // 音声ファイルのURL
+        createdAt: Date.now(), // 現在の日時をタイムスタンプで保存
+        isPublic: true, // 公開かどうか
       });
 
-      console.log("音声がFirebaseに保存されました:", downloadURL);
+      console.log("音声がFirebaseに新規保存されました:", downloadURL);
       alert("音声が保存されました！");
     } catch (err) {
       console.error("音声の保存中にエラーが発生しました:", err);

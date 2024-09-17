@@ -22,7 +22,6 @@ export default function Home() {
       <main className={styles.mainbox}>
         <HeaderImage />
         <Slider1 />
-        テスト
       </main>
       <Footer />
     </>

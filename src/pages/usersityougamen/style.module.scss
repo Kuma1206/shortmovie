@@ -107,29 +107,6 @@
   z-index: 1001;
 }
 
-.sakujo {
-  width: 70px;
-  height: 30px;
-  border-radius: 5px;
-  border: 2px solid #000; /* 枠を表示させる */
-  background-color: rgba(0, 0, 0, 0.3);
-  color: #dbdada;
-  font-size: 16px;
-  font-weight: 400;
-  z-index: 9999;
-}
-
-.sakujobox {
-  display: flex;
-  justify-content: center;
-  position: fixed; /* 絶対位置にする */
-  top: 10px; /* 上から10pxの位置 */
-  left: 120px; /* 左端から中央に配置 */
-  transform: translateX(-50%); /* 左右の中央に揃える */
-  z-index: 2000;
-}
-
-
 .onseidougasaisei {
   display: flex;
   justify-content: center;
@@ -178,7 +155,6 @@
 .togglebox {
   display: flex;
   justify-content: end;
-  align-items: center;
   margin-top: 20px;
   z-index: 1010;
   position: relative; /* flexからrelativeへ修正 */
