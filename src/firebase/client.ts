@@ -1,5 +1,5 @@
-import { initializeApp, getApps } from 'firebase/app';
-import { getFirestore, doc, deleteDoc } from 'firebase/firestore';
+import { initializeApp, getApps, getApp } from 'firebase/app';
+import { getFirestore, doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { getStorage, ref, deleteObject, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { getAuth } from 'firebase/auth';
 import { getFunctions } from 'firebase/functions';
@@ -13,22 +13,80 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-//テスト
-
 if (getApps().length === 0) {
   // Firebaseアプリの初期化
   initializeApp(firebaseConfig);
 }
 
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApp(); 
+
 // Firebase関連機能をエクスポート
-export const db = getFirestore();
-export const storage = getStorage();
-export const auth = getAuth();
-export const functions = getFunctions(); // 必要に応じてリージョン指定も可能
+export const db = getFirestore(app);
+export const storage = getStorage(app);
+export const auth = getAuth(app);
+export const functions = getFunctions(app); // 必要に応じてリージョン指定も可能
+
+// FirestoreにisPublicフィールドを追加・更新する関数
+export const updateIsPublic = async (docPath: string, isPublic: boolean) => {
+  const docRef = doc(db, docPath);
+
+  try {
+    // FirestoreドキュメントにisPublicフィールドを追加または更新
+    await updateDoc(docRef, {
+      isPublic: isPublic,
+    });
+    console.log('isPublicフィールドが正常に保存されました。');
+  } catch (error) {
+    console.error('isPublicの保存中にエラーが発生しました:', error);
+  }
+};
+
+// 音声ファイルをアップロードし、そのURLを取得して Firestore に保存
+// 音声ファイルをアップロードし、そのURLを取得して Firestore に動画リンクとユーザー情報も保存
+export const uploadAudioAndSaveUrl = async (
+  file: File,
+  userId: string,
+  videoId: string,
+  videoUrl: string
+) => {
+  try {
+    // Upload audio file to Firebase Storage
+    const audioFileName = `audio/${userId}/${Date.now()}_${file.name}`;
+    const audioRef = ref(storage, audioFileName);
+    
+    await uploadBytes(audioRef, file);
+    
+    // Get the download URL of the uploaded file
+    const audioUrl = await getDownloadURL(audioRef);
+    
+    console.log('Audio URL obtained:', audioUrl);
+
+    // Save audio URL, video link, and user info to Firestore
+    const videoDocRef = doc(db, 'videos', videoId);
+
+    try {
+      await updateDoc(videoDocRef, {
+        audioUrl: audioUrl,
+        videoUrl: videoUrl,
+        userId: userId,
+      });
+      console.log('Audio URL, video link, and user ID saved to Firestore:', audioUrl);
+    } catch (firestoreError) {
+      console.error('Error saving audio information to Firestore:', firestoreError);
+      throw firestoreError;
+    }
+
+    return audioUrl;
+  } catch (error) {
+    console.error('Error occurred while uploading audio:', error);
+    throw error;
+  }
+};
+
+
 
 // 画像をアップロードしてそのURLを返す関数を定義
 export const uploadProfileImage = async (file: File): Promise<string> => {
-  const storage = getStorage();
   const storageRef = ref(storage, `profile_images/${file.name}`);
   
   // Firebase Storage に画像をアップロード
@@ -62,3 +120,5 @@ export const deleteVideoAndDocument = async (storagePath: string, firestoreDocPa
     throw error;
   }
 };
+
+export { app };

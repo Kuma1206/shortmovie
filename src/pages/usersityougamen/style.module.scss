@@ -106,3 +106,87 @@
   width: 70px;
   z-index: 1001;
 }
+
+.onseidougasaisei {
+  display: flex;
+  justify-content: center;
+  margin: 10px;
+  width: 120px;
+  position: fixed; /* 画面下に固定 */
+  bottom: 50px; /* 下からの距離を指定 */
+  left: 50%; /* 中央に配置 */
+  transform: translateX(-50%); /* 完全に中央にするためにX方向の位置を調整 */
+  z-index: 1001;
+  background-color: rgba(0, 0, 0, 0.5); /* 半透明の背景 */
+  padding: 5px; /* ボタン周りに余白 */
+  border-radius: 5px; /* 角丸 */
+}
+
+.onseidougasaisei:hover {
+  display: flex;
+  justify-content: center;
+  margin: 10px;
+  width: 120px;
+  position: fixed; /* 画面下に固定 */
+  bottom: 50px; /* 下からの距離を指定 */
+  left: 50%; /* 中央に配置 */
+  transform: translateX(-50%); /* 完全に中央にするためにX方向の位置を調整 */
+  z-index: 1001;
+  background-color: rgba(0, 0, 0, 0.9); /* 半透明の背景 */
+  padding: 5px; /* ボタン周りに余白 */
+  border-radius: 5px; /* 角丸 */
+}
+
+
+.onseidouga {
+  width: 120px;
+  height: 30px;
+  border-radius: 5px;
+  border: none; /* 枠を表示させる */
+  background-color: rgba(0, 0, 0, 0);
+  color: #dbdada;
+  font-size: 16px;
+  font-weight: 400;
+  z-index: 9999;
+}
+
+
+///トルグ
+.togglebox {
+  display: flex;
+  justify-content: end;
+  margin-top: 20px;
+  z-index: 1010;
+  position: relative; /* flexからrelativeへ修正 */
+  top: -45px;
+  right: 50px;
+}
+
+.react-toggle {
+  width: 60px;
+  height: 34px;
+}
+
+.react-toggle-track {
+  background-color: #ccc;
+  transition: background-color 0.2s;
+}
+
+.react-toggle-thumb {
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+}
+
+/* トグルがオンの時 */
+.react-toggle--checked .react-toggle-track {
+  background-color: #4e76aa;
+}
+
+.react-toggle--checked .react-toggle-thumb {
+  transform: translateX(26px);
+}
+
+.title {
+  padding: 0px 10px;
+}
