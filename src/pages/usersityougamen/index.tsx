@@ -97,7 +97,7 @@ const Usersityougamen = () => {
         console.log("音声ファイルのメタデータが正常に読み込まれました。");
       });
       audioRef.current.addEventListener("error", (e) => {
-        console.error("音声ファイルの読み込み中にエラーが発生しました:", e);
+        console.error("音声ファイルの読み込み中にエラーが発生しました。:", e);
       });
     }
   }, [audioUrl]);
