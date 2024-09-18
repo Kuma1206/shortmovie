@@ -36,3 +36,13 @@
   stroke: #fff; /* 外側の線の色 */
   stroke-width: 1px; /* 線の太さ */
 }
+
+.iconClicked2 {
+  width: 24px;
+  height: 24px;
+  color: #fff; /* クリック後のアイコン色 */
+  fill: #fff; /* クリック後の内側の色を白に */
+  stroke: #fff; /* 外側の線の色 */
+  stroke-width: 1px; /* 線の太さ */
+  // background-color: #fff;
+}
