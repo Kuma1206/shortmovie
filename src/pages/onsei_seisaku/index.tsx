@@ -86,7 +86,7 @@ const startRecording = async () => {
     }
   } catch (error) {
     console.error("マイクへのアクセスに失敗しました:", error);
-    alert("マイクのアクセスに失敗しました。");
+    alert("マイクのアクセスに失敗しました");
   }
 };
 
