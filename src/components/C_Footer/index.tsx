@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import styles from "./style.module.scss";
 import Link from "next/link";
-import { UserIcon } from "@heroicons/react/solid";
-import { HomeIcon, PlusIcon } from "@heroicons/react/outline";
+import { HomeIcon, PlusIcon, UserIcon } from "@heroicons/react/outline";
 
 
 const C_footer = () => {
