@@ -58,7 +58,7 @@ exports.saveAudioUrlToFirestore = functions.storage.object().onFinalize(async (o
     audioUrl: url,
   });
 
-  console.log('Firestore に音声URLを保存しました:', url);
+  console.log('Firestoreに音声URLを保存しました:', url);
 
   return null;
 });
