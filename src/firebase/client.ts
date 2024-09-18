@@ -2,7 +2,7 @@ import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getFirestore, doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { getStorage, ref, deleteObject, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { getAuth } from 'firebase/auth';
-import { getFunctions } from 'firebase/functions';
+// import { getFunctions } from 'firebase/functions';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -24,7 +24,7 @@ const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 export const auth = getAuth(app);
-export const functions = getFunctions(app); // 必要に応じてリージョン指定も可能
+// export const functions = getFunctions(app); // 必要に応じてリージョン指定も可能
 
 // FirestoreにisPublicフィールドを追加・更新する関数
 export const updateIsPublic = async (docPath: string, isPublic: boolean) => {
