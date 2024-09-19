@@ -9,7 +9,7 @@ import { HomeIcon, PlusIcon, UserIcon } from "@heroicons/react/outline";
 import Mypage from "@/components/Mypage";
 
 const Seisaku_page2 = () => {
-  const [activeTabIndex, setActiveTabIndex] = useState(2); // タブの状態管理、初期値を1に設定
+  const [activeTabIndex, setActiveTabIndex] = useState(1); // タブの状態管理、初期値を1に設定
   const router = useRouter();
 
   // タブのクリックイベント
