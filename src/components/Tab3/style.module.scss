@@ -23,7 +23,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #fff;
+  background-color: none;
   color: #000;
   border-bottom: 2px solid rgb(235, 235, 235);
 }
@@ -36,6 +36,6 @@
   align-items: center;
   background-color: #252525;
   color: #c0bcbc;
-  border-bottom: 2px solid rgb(235, 235, 235);
+  border-bottom: 1px solid rgb(235, 235, 235);
   border-radius: 5px;
 }

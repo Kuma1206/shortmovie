@@ -32,6 +32,7 @@ const Seisaku_page2 = () => {
           selectedIndex={activeTabIndex}
           onSelect={(index) => setActiveTabIndex(index)}
         >
+          {/* TabPanel の数を Tab と一致させる */}
           <TabPanel>
             <div className={styles.textbox}>
               {/* 動画一覧のコンテンツ */}
@@ -57,23 +58,19 @@ const Seisaku_page2 = () => {
               <HomeIcon className={styles.icon} />
             </div>
           </Tab>
-          <Tab className={styles.menubox}>
-            <div onClick={() => handleIconClick(1)}>
-              <PlusIcon
-                className={
-                  activeTabIndex === 1 ? styles.iconClicked2 : styles.icon2
-                }
-              />
-            </div>
+          <Tab className={styles.menubox} onClick={() => handleIconClick(1)}>
+            <PlusIcon
+              className={
+                activeTabIndex === 1 ? styles.iconClicked2 : styles.icon2
+              }
+            />
           </Tab>
-          <Tab className={styles.menubox}>
-            <div onClick={() => handleIconClick(2)}>
-              <UserIcon
-                className={
-                  activeTabIndex === 2 ? styles.iconClicked : styles.icon
-                }
-              />
-            </div>
+          <Tab className={styles.menubox} onClick={() => handleIconClick(2)}>
+            <UserIcon
+              className={
+                activeTabIndex === 2 ? styles.iconClicked : styles.icon
+              }
+            />
           </Tab>
         </TabList>
       </div>
