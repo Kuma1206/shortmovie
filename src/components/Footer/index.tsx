@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import styles from "./style.module.scss";
 import Link from "next/link";
-import { HomeIcon, HeartIcon, UserIcon } from "@heroicons/react/outline";
+import { HomeIcon, PlusIcon, UserIcon } from "@heroicons/react/outline";
 
 
 const Footer = () => {
@@ -28,13 +28,17 @@ const Footer = () => {
         </li>
       </Link>
       <li>
-        <HeartIcon
-          className={clickedIcon === "heart" ? styles.iconClicked : styles.icon}
-          onClick={() => handleIconClick("heart")}
-        />
+        <Link href={"/seisaku_page2"}>
+          <PlusIcon
+            className={
+              clickedIcon === "olus" ? styles.iconClicked : styles.icon
+            }
+            onClick={() => handleIconClick("plus")}
+          />
+        </Link>
       </li>
       <li>
-        <Link href={"/seisaku_page2"}>
+        <Link href={"/seisaku_page1"}>
           <UserIcon
             className={
               clickedIcon === "user" ? styles.iconClicked : styles.icon

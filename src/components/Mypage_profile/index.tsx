@@ -25,7 +25,7 @@ const Mypage_profile = () => {
 
     // ユーザーがログインしているか確認
     if (auth.currentUser) {
-      router.push("/seisaku_page2"); // ログインしている場合、/mypage にリダイレクト
+      router.push("/seisaku_page1"); // ログインしている場合、/mypage にリダイレクト
     } else {
       fetchUserData();
     }
