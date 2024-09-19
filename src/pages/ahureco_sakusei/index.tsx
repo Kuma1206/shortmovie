@@ -7,7 +7,7 @@ const Shinario_seisaku = () => {
   return (
     <>
       <div className={styles.moviebox}>動画再生</div>
-      <Link href="/seisaku_page">
+      <Link href="/seisaku_page2">
         <WeuiClose2Outlined className={styles.backbutton} />
       </Link>
       <main className={styles.mainbox1}>

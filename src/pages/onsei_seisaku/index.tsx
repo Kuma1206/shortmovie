@@ -286,7 +286,7 @@ const startRecording = async () => {
         </div>
       )}
 
-      <Link href="/seisaku_page">
+      <Link href="/seisaku_page2">
         <WeuiClose2Outlined className={styles.backbutton} />
       </Link>
     </>
