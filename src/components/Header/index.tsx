@@ -24,7 +24,7 @@ const Header = () => {
   return (
     <ul className={styles.menubox}>
       <Link href="/">
-        <li className={styles.logo}>ロゴ</li>
+        <li className={styles.logo}>logo</li>
       </Link>
       <div className={styles.login}>
         {user === null && !waiting && <p onClick={signIn}>ログイン</p>}
