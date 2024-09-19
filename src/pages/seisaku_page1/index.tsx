@@ -7,6 +7,7 @@ import { Tabs, TabList, Tab, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
 import { HomeIcon, PlusIcon, UserIcon } from "@heroicons/react/outline";
 import Mypage from "@/components/Mypage";
+import Home from "@/pages/home";
 
 const Seisaku_page1 = () => {
   const [activeTabIndex, setActiveTabIndex] = useState(2); // タブの状態管理、初期値を2に設定
@@ -31,7 +32,9 @@ const Seisaku_page1 = () => {
           onSelect={(index) => setActiveTabIndex(index)}
         >
           <TabPanel>
-            <div className={styles.textbox}>動画一覧へ</div>
+            <div>
+              <Home />
+            </div>
           </TabPanel>
           <TabPanel>
             <div>
@@ -49,7 +52,7 @@ const Seisaku_page1 = () => {
         <TabList className={styles.tabbox}>
           <Tab
             className={styles.menubox}
-            onClick={() => handleIconClick(0, "/")} // ホーム画面（"/"）へリダイレクト
+            onClick={() => handleIconClick(0, "/home")} // ホーム画面（"/"）へリダイレクト
           >
             <HomeIcon
               className={
