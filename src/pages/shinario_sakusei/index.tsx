@@ -14,7 +14,7 @@ const Shinario_sakusei = () => {
         {videoUrl ? ( // 動画URLが存在する場合のみ再生
           <video controls width="100%" controlsList="nodownload">
             <source src={videoUrl as string} type="video/mp4" />
-            お使いのブラウザは動画タグをサポートしていません。
+            お使いのブラウザは動画タグをサポートしていません
           </video>
         ) : (
           <p>動画が選択されていません。</p>
