@@ -1,8 +1,6 @@
 import Head from "next/head";
-import Image from "next/image";
 import { Inter } from "next/font/google";
 import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import HeaderImage from "@/components/HeaderImage";
 import Slider1 from "@/components/Slider1";
 import styles from "./style.module.scss";
@@ -24,7 +22,6 @@ export default function Home() {
           <HeaderImage />
           <Slider1 />
         </main>
-        <Footer />
       </div>
     </>
   );
