@@ -10,7 +10,7 @@
   width: 100%;
   height: 50px;
   z-index: 1000;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0);
 }
 
 .logo {
@@ -20,6 +20,7 @@
   align-items: center;
   width: 100%;
   height: 30px;
+  color: #fff;
 }
 
 .icon {
@@ -45,6 +46,7 @@
   padding: 5px;
   background-color: none;   
   border-radius: 5px;        // 必要に応じてマージンを設定
+  color: #fff;
 }
 
 

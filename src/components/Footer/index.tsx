@@ -34,7 +34,7 @@ const Footer = () => {
         />
       </li>
       <li>
-        <Link href={"/mypage"}>
+        <Link href={"/seisaku_page2"}>
           <UserIcon
             className={
               clickedIcon === "user" ? styles.iconClicked : styles.icon
