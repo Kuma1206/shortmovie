@@ -1,7 +1,6 @@
 import React from "react";
 import styles from "./style.module.scss";
 import Mypage_profile from "@/components/Mypage_profile";
-import C_footer from "@/components/C_Footer";
 import Slider_rireki from "@/components/Slider_rireki";
 import Header from "@/components/Header";
 import UserGuard from "../../components/Guards";
