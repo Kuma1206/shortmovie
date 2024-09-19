@@ -9,17 +9,15 @@ import { HomeIcon, PlusIcon, UserIcon } from "@heroicons/react/outline";
 import Mypage from "@/components/Mypage";
 
 const Seisaku_page2 = () => {
-  const [activeTabIndex, setActiveTabIndex] = useState(1); // タブの状態管理、初期値を○に設定
+  const [activeTabIndex, setActiveTabIndex] = useState(1); // タブの状態管理、初期値を1に設定
   const router = useRouter();
 
-  // タブのクリックイベント
-  const handleIconClick = (index: number) => {
+  // タブのクリックイベントとページ遷移の処理を一つにまとめる
+  const handleIconClick = (index: number, route?: string) => {
     setActiveTabIndex(index);
-  };
-
-  // HomeIconクリック時にindexページにリダイレクト
-  const handleHomeClick = () => {
-    router.push("/"); // ホームページ (index.js) にリダイレクト
+    if (route) {
+      router.push(route); // ページ遷移が指定されている場合にリダイレクト
+    }
   };
 
   return (
@@ -34,10 +32,7 @@ const Seisaku_page2 = () => {
         >
           {/* TabPanel の数を Tab と一致させる */}
           <TabPanel>
-            <div className={styles.textbox}>
-              {/* 動画一覧のコンテンツ */}
-              動画一覧へ
-            </div>
+            <div className={styles.textbox}>動画一覧へ</div>
           </TabPanel>
           <TabPanel>
             <div>
@@ -53,19 +48,26 @@ const Seisaku_page2 = () => {
       </main>
       <div className={styles.tabmenu}>
         <TabList className={styles.tabbox}>
-          <Tab className={styles.menubox}>
-            <div onClick={handleHomeClick}>
-              <HomeIcon className={styles.icon} />
-            </div>
+          <Tab
+            className={styles.menubox}
+            onClick={() => handleIconClick(0, "/")} // ホーム画面（"/"）へリダイレクト
+          >
+            <HomeIcon className={styles.icon} />
           </Tab>
-          <Tab className={styles.menubox} onClick={() => handleIconClick(1)}>
+          <Tab
+            className={styles.menubox}
+            onClick={() => handleIconClick(1)} // タブ切り替えだけ行う
+          >
             <PlusIcon
               className={
                 activeTabIndex === 1 ? styles.iconClicked2 : styles.icon2
               }
             />
           </Tab>
-          <Tab className={styles.menubox} onClick={() => handleIconClick(2)}>
+          <Tab
+            className={styles.menubox}
+            onClick={() => handleIconClick(2)} // タブ切り替えだけ行う
+          >
             <UserIcon
               className={
                 activeTabIndex === 2 ? styles.iconClicked : styles.icon
