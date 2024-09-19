@@ -10,11 +10,13 @@ const Tab3 = () => {
   return (
     <div className={styles.tabmenu}>
       <Tabs>
+        <div className={styles.tabstyle}>
         <TabList className={styles.tabbox}>
-          <Tab className={styles.menubox}>Myコンテンツ</Tab>
-          <Tab className={styles.menubox}>新規作成</Tab>
-          <Tab className={styles.menubox}>一時保存</Tab>
-        </TabList>
+          <Tab className={styles.menubox}>My library</Tab>
+          <Tab className={styles.menubox}>New</Tab>
+          <Tab className={styles.menubox}>keep</Tab>
+          </TabList>
+        </div>
 
         <TabPanel>
           <div> 
