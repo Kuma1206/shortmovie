@@ -23,7 +23,7 @@ const Shinario_sakusei = () => {
       <div className={styles.hozonbox}>
         <button className={styles.hozon}>保存</button>
       </div>
-      <Link href="/seisaku_page">
+      <Link href="/seisaku_page2">
         <WeuiClose2Outlined className={styles.backbutton} />
       </Link>
       <main className={styles.mainbox1}>
