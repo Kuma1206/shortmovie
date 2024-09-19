@@ -1,8 +1,8 @@
-import React, { useState, useEffect, ReactNode } from "react";
+import React, { ReactNode } from "react";
 import { useRouter } from "next/router";
 import { Tabs, TabList, Tab } from "react-tabs";
-import "react-tabs/style/react-tabs.css";
 import { HomeIcon, PlusIcon, UserIcon } from "@heroicons/react/outline";
+import classNames from "classnames";
 import styles from "./style.module.scss";
 
 interface LayoutProps {
@@ -10,80 +10,58 @@ interface LayoutProps {
 }
 
 const Layout = ({ children }: LayoutProps) => {
-  const [activeTabIndex, setActiveTabIndex] = useState(2); // タブの状態管理
   const router = useRouter();
-
-  // URLに基づいてタブのインデックスを設定
-  useEffect(() => {
-    switch (router.pathname) {
-      case "/home":
-        setActiveTabIndex(0);
-        break;
-      case "/seisaku_page2":
-        setActiveTabIndex(1);
-        break;
-      case "/seisaku_page1":
-        setActiveTabIndex(2);
-        break;
-      default:
-        setActiveTabIndex(2);
-        break;
-    }
-  }, [router.pathname]);
-
-  // タブのクリックイベント
-  const handleIconClick = (index: number, route?: string) => {
-    if (route) {
-      router.push(route); // ページ遷移が指定されている場合はリダイレクト
-    }
-  };
+  const isHomePage = router.pathname === "/" || router.pathname === "/home";
+  const isSeisakuPage =
+    router.pathname === "/seisaku_page2";
+  const isMyPage =
+    router.pathname === "/seisaku_page1";
 
   return (
     <>
-      <header>{/* ここにヘッダーコンポーネントが入る */}</header>
-      <main className={styles.mainbox}>
-        <Tabs
-          selectedIndex={activeTabIndex}
-          onSelect={(index) => setActiveTabIndex(index)}
-        >
+      <header>{/* 共通ヘッダー */}</header>
+      <main
+        className={styles.mainbox} // ホームページかどうかでスタイルを変更
+      >
+        <Tabs>
           <div className={styles.tabmenu}>
             <TabList className={styles.tabbox}>
               <Tab
-                className={styles.menubox}
-                onClick={() => handleIconClick(0, "/home")}
+                className={isHomePage ? styles.homeMain : styles.menubox}
+                onClick={() => router.push("/home")}
               >
                 <HomeIcon
-                  className={
-                    activeTabIndex === 0 ? styles.iconClicked : styles.icon
-                  }
+                  className={classNames(styles.icon, {
+                    [styles.iconClicked]: isHomePage,
+                    [styles.homeicon]: isHomePage,
+                  })}
                 />
               </Tab>
-
               <Tab
-                className={styles.menubox}
-                onClick={() => handleIconClick(1, "/seisaku_page2")}
+                className={isSeisakuPage ? styles.homeMain : styles.menubox}
+                onClick={() => router.push("/seisaku_page2")}
               >
                 <PlusIcon
-                  className={
-                    activeTabIndex === 1 ? styles.iconClicked2 : styles.icon2
-                  }
+                  className={classNames(styles.icon, {
+                    [styles.iconClicked]: isSeisakuPage,
+                    [styles.homeicon]: isSeisakuPage,
+                  })}
                 />
               </Tab>
-
               <Tab
-                className={styles.menubox}
-                onClick={() => handleIconClick(2, "/seisaku_page1")}
+                className={isMyPage ? styles.homeMain : styles.menubox}
+                onClick={() => router.push("/seisaku_page1")}
               >
                 <UserIcon
-                  className={
-                    activeTabIndex === 2 ? styles.iconClicked : styles.icon
-                  }
+                  className={classNames(styles.icon, {
+                    [styles.iconClicked]: isMyPage,
+                    [styles.homeicon]: isMyPage,
+                  })}
                 />
               </Tab>
             </TabList>
           </div>
         </Tabs>
-        {/* 子要素（動的なページコンテンツ）を表示 */}
         <div>{children}</div>
       </main>
     </>
