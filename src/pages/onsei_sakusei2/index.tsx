@@ -211,7 +211,7 @@ const Onsei_sakusei2 = () => {
         {/* hozonボタンを削除し、div自体をクリックで発動 */}
         {isSaving ? "保存中..." : "保存"}
       </div>
-      <Link href="/seisaku_page">
+      <Link href="/seisaku_page2">
         <WeuiClose2Outlined className={styles.backbutton} />
       </Link>
     </>

@@ -123,7 +123,7 @@ const Hozondougasaisei = () => {
         alert("削除しました");
 
         // ページから音声表示を削除するために、routerを使ってリダイレクト
-        router.push("/seisaku_page");
+        router.push("/seisaku_page2");
       } catch (error) {
         console.error("音声データの削除中にエラーが発生しました:", error);
       }
@@ -153,7 +153,7 @@ const Hozondougasaisei = () => {
         }
 
         // 音声ファイルが存在しない場合も、ページをリダイレクトする
-        router.push("/seisaku_page");
+        router.push("/seisaku_page2");
       } catch (error) {
         console.error(
           "Firestoreのドキュメント削除中にエラーが発生しました:",
@@ -218,7 +218,7 @@ const Hozondougasaisei = () => {
         </button>
       </div>
 
-      <Link href="/seisaku_page">
+      <Link href="/seisaku_page2">
         <WeuiClose2Outlined className={styles.backbutton} />
       </Link>
     </>
