@@ -7,7 +7,6 @@ import { Tabs, TabList, Tab, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
 import { HomeIcon, PlusIcon, UserIcon } from "@heroicons/react/outline";
 import Mypage from "@/components/Mypage";
-import Home from "@/pages/home";
 
 const Seisaku_page2 = () => {
   const [activeTabIndex, setActiveTabIndex] = useState(1); // タブの状態管理、初期値を1に設定
@@ -34,7 +33,7 @@ const Seisaku_page2 = () => {
           {/* TabPanel の数を Tab と一致させる */}
           <TabPanel>
             <div>
-              <Home />
+              {/* Home コンポーネントは削除。完全なページ遷移に任せる */}
             </div>
           </TabPanel>
           <TabPanel>
@@ -53,13 +52,17 @@ const Seisaku_page2 = () => {
         <TabList className={styles.tabbox}>
           <Tab
             className={styles.menubox}
-            onClick={() => handleIconClick(0, "/home")} // ホーム画面（"/"）へリダイレクト
+            onClick={() => router.push("/home")} // 完全なページ遷移を実現
           >
-            <HomeIcon className={styles.icon} />
+            <HomeIcon
+              className={
+                activeTabIndex === 0 ? styles.iconClicked : styles.icon
+              }
+            />
           </Tab>
           <Tab
             className={styles.menubox}
-            onClick={() => handleIconClick(1)} // タブ切り替えだけ行う
+            onClick={() => handleIconClick(1)} // タブ切り替えのみ行う
           >
             <PlusIcon
               className={
@@ -69,7 +72,7 @@ const Seisaku_page2 = () => {
           </Tab>
           <Tab
             className={styles.menubox}
-            onClick={() => handleIconClick(2)} // タブ切り替えだけ行う
+            onClick={() => handleIconClick(2)} // タブ切り替えのみ行う
           >
             <UserIcon
               className={
