@@ -39,11 +39,15 @@ const Slider1 = () => {
           // 取得した公開ドキュメントをリストに追加
           audioSnapshot.forEach((doc) => {
             const audioData = doc.data();
-            allPublicAudios.push({
-              audioId: doc.id,
-              videoUrl: audioData.videoUrl,
-              audioUrl: audioData.audioUrl,
-            });
+
+            // Firestoreから取得したデータがnullまたは削除済みでないことを確認
+            if (audioData.audioUrl && audioData.videoUrl) {
+              allPublicAudios.push({
+                audioId: doc.id,
+                videoUrl: audioData.videoUrl,
+                audioUrl: audioData.audioUrl,
+              });
+            }
           });
         }
 
