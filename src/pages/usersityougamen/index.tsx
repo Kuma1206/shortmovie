@@ -137,7 +137,7 @@ const Usersityougamen = () => {
         <button className={styles.hozon}>編集</button>
       </div> */}
 
-      <div className={styles.togglebox}>
+      {/* <div className={styles.togglebox}>
         <span className={styles.title}>公開</span>
         <Toggle
           checked={checked}
@@ -145,7 +145,7 @@ const Usersityougamen = () => {
           icons={false}
           className="react-toggle"
         />
-      </div>
+      </div> */}
 
       <Link href="/">
         <WeuiClose2Outlined className={styles.backbutton} />

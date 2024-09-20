@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/router";
 import styles from "./style.module.scss";
 import WeuiClose2Outlined from "@/components/Backbutton";
@@ -106,6 +106,77 @@ const Onsei_sakusei2 = () => {
     }
   };
 
+  // 動画の最初のフレームをキャプチャしてサムネイルとして保存
+  const captureThumbnail = (
+    captureTimeInSeconds: number = 1
+  ): Promise<string | null> => {
+    if (!videoRef.current) return Promise.resolve(null);
+
+    return new Promise<string | null>((resolve, reject) => {
+      if (!videoRef.current) {
+        return reject(new Error("videoRef.current is null"));
+      }
+      videoRef.current.currentTime = captureTimeInSeconds;
+
+      const handleTimeUpdate = () => {
+        try {
+          // ここで1秒後のフレームをキャプチャ
+          const canvas = document.createElement("canvas");
+          canvas.width = videoRef.current!.videoWidth;
+          canvas.height = videoRef.current!.videoHeight;
+          const ctx = canvas.getContext("2d");
+          if (ctx) {
+            ctx.drawImage(videoRef.current!, 0, 0, canvas.width, canvas.height);
+            const dataURL = canvas.toDataURL("image/png");
+            resolve(dataURL);
+          } else {
+            reject(new Error("Failed to get canvas context"));
+          }
+        } catch (error) {
+          if (error instanceof Error) {
+            reject(
+              new Error(
+                "サムネイルのキャプチャに失敗しました: " + error.message
+              )
+            );
+          } else {
+            reject(
+              new Error("サムネイルのキャプチャに失敗しました: 不明なエラー")
+            );
+          }
+        } finally {
+          videoRef.current!.removeEventListener("timeupdate", handleTimeUpdate);
+        }
+      };
+
+      videoRef.current.addEventListener("timeupdate", handleTimeUpdate, {
+        once: true,
+      });
+    });
+  };
+
+  const uploadThumbnailToFirebase = async (thumbnailDataUrl: string) => {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const thumbnailFileName = `thumbnail_${Date.now()}.png`;
+    const thumbnailStorageRef = ref(
+      storage,
+      `user_thumbnails/${user.uid}/${thumbnailFileName}`
+    );
+
+    // サムネイル画像データをBlobに変換
+    const response = await fetch(thumbnailDataUrl);
+    const blob = await response.blob();
+
+    // Firebase Storageにアップロード
+    const snapshot = await uploadBytes(thumbnailStorageRef, blob);
+    const downloadURL = await getDownloadURL(snapshot.ref);
+
+    return downloadURL;
+  };
+
+  // 保存処理におけるキャプチャとアップロードの流れ
   const uploadAudioToFirebase = async (audioBlob: Blob) => {
     try {
       const user = auth.currentUser;
@@ -123,6 +194,16 @@ const Onsei_sakusei2 = () => {
       const snapshot = await uploadBytes(audioStorageRef, audioBlob);
       const downloadURL = await getDownloadURL(snapshot.ref);
 
+      // 動画の1秒後のフレームをキャプチャ
+      const thumbnailDataUrl = await captureThumbnail(1); // ここでサムネイルをキャプチャ
+
+      let thumbnailUrl = null;
+      if (thumbnailDataUrl) {
+        thumbnailUrl = await uploadThumbnailToFirebase(thumbnailDataUrl); // サムネイルをFirebaseにアップロード
+      } else {
+        console.error("サムネイルのキャプチャに失敗しました");
+      }
+
       // Firestoreに新しいドキュメントをユーザーUIDのサブコレクションに作成して保存する
       const audioCollectionRef = collection(
         firestore,
@@ -132,6 +213,7 @@ const Onsei_sakusei2 = () => {
       await addDoc(audioCollectionRef, {
         videoUrl, // ビデオのURL
         audioUrl: downloadURL, // 音声ファイルのURL
+        thumbnailUrl, // サムネイル画像のURL
         createdAt: Date.now(), // 現在の日時をタイムスタンプで保存
         isPublic: true, // 公開かどうか
       });
@@ -140,6 +222,7 @@ const Onsei_sakusei2 = () => {
       alert("音声が保存されました！");
     } catch (err) {
       console.error("音声の保存中にエラーが発生しました:", err);
+      alert("エラーが発生しました。もう一度やり直してください。");
     } finally {
       setIsSaving(false); // 保存中フラグを解除
     }
@@ -167,6 +250,7 @@ const Onsei_sakusei2 = () => {
             controls
             width="100%"
             controlsList="nodownload"
+            crossOrigin="anonymous"
             onEnded={stopRecording} // 動画が終了したときに録音を停止
           >
             <source src={videoUrl as string} type="video/mp4" />
@@ -208,7 +292,6 @@ const Onsei_sakusei2 = () => {
         onClick={saveAudio} // hozonbox全体がクリックされたときに保存処理を実行
         style={{ cursor: isSaving ? "not-allowed" : "pointer" }} // 保存中はクリックできないように視覚的に変化
       >
-        {/* hozonボタンを削除し、div自体をクリックで発動 */}
         {isSaving ? "保存中..." : "保存"}
       </div>
       <Link href="/seisaku_page2">

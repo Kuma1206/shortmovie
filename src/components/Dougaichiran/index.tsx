@@ -20,6 +20,7 @@ interface VideoData {
   id: string;
   videoUrl: string;
   audioUrl: string;
+  thumbnailUrl?: string; // サムネイルURLを追加
 }
 
 const Dougaichiran = () => {
@@ -151,17 +152,20 @@ const Dougaichiran = () => {
                 >
                   <WeuiClose2Outlined />
                 </div>
-                <video
-                  controlsList="nodownload"
-                  width="100%"
-                  height="100%"
-                  style={{ pointerEvents: "none", objectFit: "cover" }} // はみ出た部分を隠し、枠内に収める
-                  onPlay={() => handlePlay(index)} // 再生時に音声を再生
-                  onPause={() => handlePause(index)} // 停止時に音声を停止
-                >
-                  <source src={video.videoUrl} type="video/mp4" />
-                  お使いのブラウザは動画タグをサポートしていません。
-                </video>
+
+                {/* サムネイル表示 */}
+                {video.thumbnailUrl ? (
+                  <img
+                    src={video.thumbnailUrl}
+                    alt="サムネイル"
+                    width="100%"
+                    height="100%"
+                    style={{ objectFit: "cover" }}
+                  />
+                ) : (
+                  <p>サムネイルがありません</p>
+                )}
+
                 <audio
                   ref={(el) => {
                     audioRefs.current[index] = el!;

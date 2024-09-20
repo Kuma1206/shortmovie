@@ -105,6 +105,9 @@
   justify-content: center;
   margin: 10px;
   width: 70px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
   z-index: 1001;
 }
 
@@ -180,10 +183,9 @@
   display: flex;
   justify-content: end;
   align-items: center;
-  margin-top: 20px;
   z-index: 1010;
-  position: relative; /* flexからrelativeへ修正 */
-  top: -45px;
+  position: absolute; /* flexからrelativeへ修正 */
+  top: 12px;
   right: 50px;
 }
 
