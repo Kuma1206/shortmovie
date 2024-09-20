@@ -99,40 +99,18 @@ const Hozondougasaisei = () => {
 
   // 音声ファイルとFirestoreのドキュメントを削除する関数
   const handleDeleteAudio = async () => {
-    if (userId && audioDocId && audioUrl) {
-      try {
-        // Firebase Storageから音声ファイルを削除
-        const audioRefInStorage = ref(storage, audioUrl as string);
-        await deleteObject(audioRefInStorage);
+    // 削除確認アラートを表示
+    const confirmation = window.confirm("削除しますか？");
 
-        // Firestoreから音声データを削除
-        const audioDocRef = doc(
-          db,
-          `user_audio/${userId}/audio`,
-          audioDocId as string
-        );
-        await deleteDoc(audioDocRef);
+    // ユーザーが削除を確認した場合のみ削除処理を実行
+    if (confirmation) {
+      if (userId && audioDocId && audioUrl) {
+        try {
+          // Firebase Storageから音声ファイルを削除
+          const audioRefInStorage = ref(storage, audioUrl as string);
+          await deleteObject(audioRefInStorage);
 
-        // Firestoreから動画データも削除
-        const videoDocRef = doc(db, "videos", videoDocId as string);
-        await deleteDoc(videoDocRef);
-
-        console.log("音声データと動画データが正常に削除されました。");
-
-        // 削除成功後にアラートを表示
-        alert("削除しました");
-
-        // ページから音声表示を削除するために、routerを使ってリダイレクト
-        router.push("/seisaku_page2");
-      } catch (error) {
-        console.error("音声データの削除中にエラーが発生しました:", error);
-      }
-    } else {
-      console.log("userId, audioDocId または audioUrl が存在しません。");
-
-      try {
-        if (userId && audioDocId) {
-          // Firestoreの音声データドキュメントのみを削除
+          // Firestoreから音声データを削除
           const audioDocRef = doc(
             db,
             `user_audio/${userId}/audio`,
@@ -144,21 +122,49 @@ const Hozondougasaisei = () => {
           const videoDocRef = doc(db, "videos", videoDocId as string);
           await deleteDoc(videoDocRef);
 
-          console.log(
-            "Firestoreの音声ドキュメントと動画ドキュメントが削除されました。"
-          );
+          console.log("音声データと動画データが正常に削除されました。");
 
-          // Firestoreのデータが削除された場合にもアラートを表示
+          // 削除成功後にアラートを表示
           alert("削除しました");
-        }
 
-        // 音声ファイルが存在しない場合も、ページをリダイレクトする
-        router.push("/seisaku_page2");
-      } catch (error) {
-        console.error(
-          "Firestoreのドキュメント削除中にエラーが発生しました:",
-          error
-        );
+          // ページから音声表示を削除するために、routerを使ってリダイレクト
+          router.push("/seisaku_page2");
+        } catch (error) {
+          console.error("音声データの削除中にエラーが発生しました:", error);
+        }
+      } else {
+        console.log("userId, audioDocId または audioUrl が存在しません。");
+
+        try {
+          if (userId && audioDocId) {
+            // Firestoreの音声データドキュメントのみを削除
+            const audioDocRef = doc(
+              db,
+              `user_audio/${userId}/audio`,
+              audioDocId as string
+            );
+            await deleteDoc(audioDocRef);
+
+            // Firestoreから動画データも削除
+            const videoDocRef = doc(db, "videos", videoDocId as string);
+            await deleteDoc(videoDocRef);
+
+            console.log(
+              "Firestoreの音声ドキュメントと動画ドキュメントが削除されました。"
+            );
+
+            // Firestoreのデータが削除された場合にもアラートを表示
+            alert("削除しました");
+          }
+
+          // 音声ファイルが存在しない場合も、ページをリダイレクトする
+          router.push("/seisaku_page2");
+        } catch (error) {
+          console.error(
+            "Firestoreのドキュメント削除中にエラーが発生しました:",
+            error
+          );
+        }
       }
     }
   };
@@ -198,9 +204,9 @@ const Hozondougasaisei = () => {
         )}
       </div>
 
-      <div className={styles.hozonbox}>
+      {/* <div className={styles.hozonbox}>
         <button className={styles.hozon}>編集</button>
-      </div>
+      </div> */}
 
       <div className={styles.togglebox}>
         <span className={styles.title}>公開</span>

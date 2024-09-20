@@ -128,10 +128,13 @@
   justify-content: center;
   position: fixed; /* 絶対位置にする */
   top: 10px; /* 上から10pxの位置 */
-  left: 120px; /* 左端から中央に配置 */
+  left: 50px; /* 左端から中央に配置 */
   transform: translateX(-50%); /* 左右の中央に揃える */
   z-index: 2000;
+  border: 1px solid #fff; /* 白色の1pxの実線を設定 */
+  border-radius: 5px;
 }
+
 
 
 .onseidougasaisei {
@@ -216,4 +219,5 @@
 
 .title {
   padding: 0px 10px;
+  color: #fff;
 }

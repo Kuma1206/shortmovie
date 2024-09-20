@@ -5,19 +5,22 @@ import { db } from "../../firebase/client";
 import Link from "next/link";
 
 const Odaiidhiran = () => {
-  const [videos, setVideos] = useState<string[]>([]);
+  const [videos, setVideos] = useState<any[]>([]); // サムネイルと動画URLのオブジェクト配列
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "videos"), (snapshot) => {
-      const videoURLs = snapshot.docs.map((doc) => {
+      const videoData = snapshot.docs.map((doc) => {
         const data = doc.data();
         console.log("Firestore data:", data); // 取得したデータを確認
-        return data.url;
+        return {
+          url: data.url, // 動画URL
+          thumbnailUrl: data.thumbnailUrl || "", // サムネイルURL
+        };
       });
 
       // Firestoreデータが更新されたことをログで確認
-      console.log("Filtered video URLs:", videoURLs.filter(Boolean));
-      setVideos(videoURLs.filter(Boolean)); // 無効なURLを除外してセット
+      console.log("Filtered video data:", videoData.filter(Boolean));
+      setVideos(videoData.filter((video) => video.url && video.thumbnailUrl)); // 無効なURLやサムネイルがないものを除外してセット
     });
 
     return () => unsubscribe();
@@ -27,36 +30,35 @@ const Odaiidhiran = () => {
     <>
       {videos.length > 0 ? (
         <div className={styles.mainbox}>
-          {videos
-            .filter((videoSrc) => videoSrc && videoSrc.trim() !== "") // 空のリンクをフィルタ
-            .map((videoSrc, index) => (
-              <Link
-                href={{
-                  pathname: "/onsei_sakusei2",
-                  query: { videoUrl: videoSrc },
+          {videos.map((video, index) => (
+            <Link
+              href={{
+                pathname: "/onsei_sakusei2",
+                query: { videoUrl: video.url },
+              }}
+              key={index}
+              className={styles.movebox}
+            >
+              <div
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  overflow: "hidden",
                 }}
-                key={index}
-                className={styles.movebox}
               >
-                <div
+                {/* サムネイル画像を表示 */}
+                <img
+                  src={video.thumbnailUrl}
+                  alt={`サムネイル ${index}`}
                   style={{
                     width: "100%",
                     height: "100%",
-                    overflow: "hidden",
+                    objectFit: "cover",
                   }}
-                >
-                  <video
-                    controlsList="nodownload"
-                    width="100%"
-                    height="100%"
-                    style={{ pointerEvents: "none", objectFit: "cover" }}
-                  >
-                    <source src={videoSrc} type="video/mp4" />
-                    お使いのブラウザは動画タグをサポートしていません。
-                  </video>
-                </div>
-              </Link>
-            ))}
+                />
+              </div>
+            </Link>
+          ))}
         </div>
       ) : (
         <p>動画がありません。</p>
