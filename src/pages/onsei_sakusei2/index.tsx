@@ -116,6 +116,10 @@ const Onsei_sakusei2 = () => {
       if (!videoRef.current) {
         return reject(new Error("videoRef.current is null"));
       }
+
+      // 一時的にcrossOrigin属性を設定
+      const originalCrossOrigin = videoRef.current.crossOrigin;
+      videoRef.current.crossOrigin = "anonymous";
       videoRef.current.currentTime = captureTimeInSeconds;
 
       const handleTimeUpdate = () => {
@@ -145,13 +149,22 @@ const Onsei_sakusei2 = () => {
             );
           }
         } finally {
-          videoRef.current!.removeEventListener("timeupdate", handleTimeUpdate);
+          if (videoRef.current) {
+            videoRef.current.removeEventListener(
+              "timeupdate",
+              handleTimeUpdate
+            );
+            // 元のcrossOrigin属性に戻す
+            videoRef.current.crossOrigin = originalCrossOrigin;
+          }
         }
       };
 
-      videoRef.current.addEventListener("timeupdate", handleTimeUpdate, {
-        once: true,
-      });
+      if (videoRef.current) {
+        videoRef.current.addEventListener("timeupdate", handleTimeUpdate, {
+          once: true,
+        });
+      }
     });
   };
 
