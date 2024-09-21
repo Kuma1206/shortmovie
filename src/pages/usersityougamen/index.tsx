@@ -115,6 +115,8 @@ const Usersityougamen = () => {
               onPlay={handlePlay}
               onPause={handlePause}
               onTimeUpdate={handleTimeUpdate}
+              playsInline
+              muted={false}
             >
               <source src={videoUrl as string} type="video/mp4" />
               お使いのブラウザは動画タグをサポートしていません。

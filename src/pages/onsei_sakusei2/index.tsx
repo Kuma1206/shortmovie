@@ -42,7 +42,11 @@ const Onsei_sakusei2 = () => {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: true,
       });
-      const mediaRecorder = new MediaRecorder(stream);
+
+      // MediaRecorderに適切なMIMEタイプを指定
+      const mediaRecorder = new MediaRecorder(stream, {
+        mimeType: "audio/mp4;codecs=opus", // mp4形式に変更
+      });
       mediaRecorderRef.current = mediaRecorder;
       audioChunksRef.current = []; // 録音を開始する前にリセット
 
@@ -55,7 +59,7 @@ const Onsei_sakusei2 = () => {
       mediaRecorder.onstop = () => {
         if (audioChunksRef.current.length > 0) {
           const audioBlob = new Blob(audioChunksRef.current, {
-            type: "audio/wav",
+            type: "audio/mp4", // 保存形式をmp4に変更
           });
           // 録音した音声をaudio要素で再生できるようにセット
           const audioUrl = URL.createObjectURL(audioBlob);
@@ -190,6 +194,7 @@ const Onsei_sakusei2 = () => {
   };
 
   // 保存処理におけるキャプチャとアップロードの流れ
+  // 音声をFirebaseにアップロードする処理もmp4に変更
   const uploadAudioToFirebase = async (audioBlob: Blob) => {
     try {
       const user = auth.currentUser;
@@ -197,7 +202,7 @@ const Onsei_sakusei2 = () => {
         throw new Error("ユーザーが認証されていません");
       }
 
-      const audioFileName = `audio_${Date.now()}.wav`;
+      const audioFileName = `audio_${Date.now()}.mp4`; // ファイル名もmp4に変更
       const audioStorageRef = ref(
         storage,
         `user_audio/${user.uid}/${audioFileName}`
@@ -241,6 +246,7 @@ const Onsei_sakusei2 = () => {
     }
   };
 
+  // 録音データを保存
   const saveAudio = () => {
     if (audioChunksRef.current.length === 0) {
       console.error("保存できる音声データがありません");
@@ -249,7 +255,7 @@ const Onsei_sakusei2 = () => {
 
     setIsSaving(true); // 保存中フラグを設定
     const audioBlob = new Blob(audioChunksRef.current, {
-      type: "audio/wav",
+      type: "audio/mp4", // 保存形式をmp4に変更
     });
     uploadAudioToFirebase(audioBlob);
   };
