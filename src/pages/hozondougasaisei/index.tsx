@@ -16,7 +16,6 @@ const Hozondougasaisei = () => {
   const { userId, videoUrl, audioUrl, audioDocId, videoDocId } = router.query; // クエリパラメータからuserId, audioDocId, videoDocIdを取得
   const videoRef = useRef<HTMLVideoElement>(null); // video要素を参照
   const audioRef = useRef<HTMLAudioElement>(null); // audio要素を参照
-  const [audioErrorShown, setAudioErrorShown] = useState(false);
 
   // FirestoreからisPublicを取得してトグルの初期値を設定
   useEffect(() => {
@@ -84,19 +83,10 @@ const Hozondougasaisei = () => {
   };
 
   const handlePlay = () => {
+    // 動画が再生されたときに音声も最初から再生
     if (audioRef.current) {
-      audioRef.current.currentTime = 0;
-      audioRef.current.play().catch((error) => {
-        console.error("音声の再生がブロックされました:", error);
-
-        // アラートを初回のみ表示する
-        if (!audioErrorShown) {
-          alert(
-            "音声を再生するには、再度動画をタップして再生を開始してください。"
-          );
-          setAudioErrorShown(true); // アラートを表示済みのフラグを立てる
-        }
-      });
+      audioRef.current.currentTime = 0; // 音声の再生位置を最初にリセット
+      audioRef.current.play();
     }
   };
 
@@ -191,8 +181,8 @@ const Hozondougasaisei = () => {
             <video
               ref={videoRef}
               controls
-              playsInline
               width="100%"
+              muted
               controlsList="nodownload"
               onPlay={handlePlay}
               onPause={handlePause}
