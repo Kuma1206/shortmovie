@@ -83,10 +83,12 @@ const Hozondougasaisei = () => {
   };
 
   const handlePlay = () => {
-    // 動画が再生されたときに音声も最初から再生
     if (audioRef.current) {
-      audioRef.current.currentTime = 0; // 音声の再生位置を最初にリセット
-      audioRef.current.play();
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().catch((error) => {
+        console.error("音声の再生がブロックされました:", error);
+        alert("音声を再生するには、画面をタップしてください。");
+      });
     }
   };
 
@@ -181,6 +183,7 @@ const Hozondougasaisei = () => {
             <video
               ref={videoRef}
               controls
+              playsInline
               width="100%"
               controlsList="nodownload"
               onPlay={handlePlay}
