@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { useRouter } from "next/router";
 import styles from "./style.module.scss";
 import WeuiClose2Outlined from "@/components/Backbutton";
@@ -6,36 +6,31 @@ import Link from "next/link";
 import { FaMicrophone } from "react-icons/fa";
 import { getAuth } from "firebase/auth";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import {
-  getFirestore,
-  doc,
-  updateDoc,
-  getDoc,
-  setDoc,
-  addDoc,
-  collection,
-} from "firebase/firestore";
+import { getFirestore, addDoc, collection } from "firebase/firestore";
 import { app } from "@/firebase/client"; // Firebaseの初期化コードをインポート
+import { FFmpeg } from "@ffmpeg/ffmpeg";
+import { fetchFile } from "@ffmpeg/util";
 
 const auth = getAuth(app);
 const storage = getStorage(app);
 const firestore = getFirestore(app);
 
+const ffmpeg = new FFmpeg();
 const Onsei_sakusei2 = () => {
   const router = useRouter();
-  const { videoUrl } = router.query; // クエリパラメータから動画URLを取得
+  const { videoUrl } = router.query;
   const [isRecording, setIsRecording] = useState(false);
-  const [isSaving, setIsSaving] = useState(false); // 保存中かどうかの状態
+  const [isSaving, setIsSaving] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]); // 録音データを保存する配列
-  const videoRef = useRef<HTMLVideoElement>(null); // 動画要素を参照
-  const audioRef = useRef<HTMLAudioElement>(null); // 音声要素を参照
+  const audioChunksRef = useRef<Blob[]>([]);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   const startRecording = async () => {
-    const user = auth.currentUser; // 現在のログインユーザーを取得
+    const user = auth.currentUser;
     if (!user) {
       alert("録音を開始するにはログインが必要です。");
-      return; // ユーザーがログインしていない場合、録音を開始しない
+      return;
     }
 
     try {
@@ -43,25 +38,23 @@ const Onsei_sakusei2 = () => {
         audio: true,
       });
 
-      // MediaRecorderに適切なMIMEタイプを指定
       const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: "audio/mp4;codecs=opus", // mp4形式に変更
+        mimeType: "audio/webm", // webm形式に変更
       });
       mediaRecorderRef.current = mediaRecorder;
-      audioChunksRef.current = []; // 録音を開始する前にリセット
+      audioChunksRef.current = [];
 
       mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
-          audioChunksRef.current.push(event.data); // 録音データを配列に保存
+          audioChunksRef.current.push(event.data);
         }
       };
 
       mediaRecorder.onstop = () => {
         if (audioChunksRef.current.length > 0) {
           const audioBlob = new Blob(audioChunksRef.current, {
-            type: "audio/mp4", // 保存形式をmp4に変更
+            type: "audio/webm",
           });
-          // 録音した音声をaudio要素で再生できるようにセット
           const audioUrl = URL.createObjectURL(audioBlob);
           if (audioRef.current) {
             audioRef.current.src = audioUrl;
@@ -76,7 +69,6 @@ const Onsei_sakusei2 = () => {
       console.log("録音を開始しました");
       setIsRecording(true);
 
-      // 動画を再生
       if (videoRef.current) {
         videoRef.current.play();
       }
@@ -94,87 +86,48 @@ const Onsei_sakusei2 = () => {
       console.log("録音を停止しました");
     }
 
-    // 動画を停止
     if (videoRef.current) {
       videoRef.current.pause();
-      videoRef.current.currentTime = 0; // 動画を最初に戻す（必要なら）
+      videoRef.current.currentTime = 0;
     }
 
     setIsRecording(false);
   };
 
-  const playAudioWithVideo = () => {
-    if (videoRef.current && audioRef.current) {
-      videoRef.current.play();
-      audioRef.current.play(); // 音声を再生
-    }
-  };
+  // サムネイルをキャプチャする関数
+  const captureThumbnail = async () => {
+    if (!videoRef.current) return null;
 
-  // 動画の最初のフレームをキャプチャしてサムネイルとして保存
-  const captureThumbnail = (
-    captureTimeInSeconds: number = 1
-  ): Promise<string | null> => {
-    if (!videoRef.current) return Promise.resolve(null);
-
+    const videoElement = videoRef.current;
     return new Promise<string | null>((resolve, reject) => {
-      if (!videoRef.current) {
-        return reject(new Error("videoRef.current is null"));
-      }
+      const canvas = document.createElement("canvas");
+      canvas.width = videoElement.videoWidth;
+      canvas.height = videoElement.videoHeight;
 
-      // 一時的にcrossOrigin属性を設定
-      const originalCrossOrigin = videoRef.current.crossOrigin;
-      videoRef.current.crossOrigin = "anonymous";
-      videoRef.current.currentTime = captureTimeInSeconds;
+      const ctx = canvas.getContext("2d");
 
-      const handleTimeUpdate = () => {
-        try {
-          // ここで1秒後のフレームをキャプチャ
-          const canvas = document.createElement("canvas");
-          canvas.width = videoRef.current!.videoWidth;
-          canvas.height = videoRef.current!.videoHeight;
-          const ctx = canvas.getContext("2d");
-          if (ctx) {
-            ctx.drawImage(videoRef.current!, 0, 0, canvas.width, canvas.height);
-            const dataURL = canvas.toDataURL("image/png");
-            resolve(dataURL);
-          } else {
-            reject(new Error("Failed to get canvas context"));
-          }
-        } catch (error) {
-          if (error instanceof Error) {
-            reject(
-              new Error(
-                "サムネイルのキャプチャに失敗しました: " + error.message
-              )
-            );
-          } else {
-            reject(
-              new Error("サムネイルのキャプチャに失敗しました: 不明なエラー")
-            );
-          }
-        } finally {
-          if (videoRef.current) {
-            videoRef.current.removeEventListener(
-              "timeupdate",
-              handleTimeUpdate
-            );
-            // 元のcrossOrigin属性に戻す
-            videoRef.current.crossOrigin = originalCrossOrigin;
-          }
+      // 動画の1秒後にフレームをキャプチャ
+      videoElement.currentTime = 1;
+
+      const handleSeeked = () => {
+        if (ctx) {
+          ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+          const dataURL = canvas.toDataURL("image/png");
+          resolve(dataURL);
+        } else {
+          reject("Canvas context not available");
         }
+        videoElement.removeEventListener("seeked", handleSeeked);
       };
 
-      if (videoRef.current) {
-        videoRef.current.addEventListener("timeupdate", handleTimeUpdate, {
-          once: true,
-        });
-      }
+      videoElement.addEventListener("seeked", handleSeeked);
     });
   };
 
+  // サムネイルをFirebaseにアップロードする関数
   const uploadThumbnailToFirebase = async (thumbnailDataUrl: string) => {
     const user = auth.currentUser;
-    if (!user) return;
+    if (!user) return null;
 
     const thumbnailFileName = `thumbnail_${Date.now()}.png`;
     const thumbnailStorageRef = ref(
@@ -182,82 +135,80 @@ const Onsei_sakusei2 = () => {
       `user_thumbnails/${user.uid}/${thumbnailFileName}`
     );
 
-    // サムネイル画像データをBlobに変換
     const response = await fetch(thumbnailDataUrl);
     const blob = await response.blob();
-
-    // Firebase Storageにアップロード
     const snapshot = await uploadBytes(thumbnailStorageRef, blob);
-    const downloadURL = await getDownloadURL(snapshot.ref);
-
-    return downloadURL;
+    return getDownloadURL(snapshot.ref);
   };
 
-  // 保存処理におけるキャプチャとアップロードの流れ
-  // 音声をFirebaseにアップロードする処理もmp4に変更
+  // 音声データをMP3に変換してFirebaseにアップロード
   const uploadAudioToFirebase = async (audioBlob: Blob) => {
     try {
+      setIsSaving(true);
+
       const user = auth.currentUser;
       if (!user) {
         throw new Error("ユーザーが認証されていません");
       }
 
-      const audioFileName = `audio_${Date.now()}.mp4`; // ファイル名もmp4に変更
+      const audioFileName = `audio_${Date.now()}.mp3`;
       const audioStorageRef = ref(
         storage,
         `user_audio/${user.uid}/${audioFileName}`
       );
 
-      // Firebase Storageに音声ファイルをアップロード
       const snapshot = await uploadBytes(audioStorageRef, audioBlob);
       const downloadURL = await getDownloadURL(snapshot.ref);
 
-      // 動画の1秒後のフレームをキャプチャ
-      const thumbnailDataUrl = await captureThumbnail(1); // ここでサムネイルをキャプチャ
+      // サムネイルをキャプチャしてFirebaseにアップロード
+      const thumbnailDataUrl = await captureThumbnail();
+      const thumbnailUrl = await uploadThumbnailToFirebase(
+        thumbnailDataUrl || ""
+      );
 
-      let thumbnailUrl = null;
-      if (thumbnailDataUrl) {
-        thumbnailUrl = await uploadThumbnailToFirebase(thumbnailDataUrl); // サムネイルをFirebaseにアップロード
-      } else {
-        console.error("サムネイルのキャプチャに失敗しました");
-      }
-
-      // Firestoreに新しいドキュメントをユーザーUIDのサブコレクションに作成して保存する
       const audioCollectionRef = collection(
         firestore,
         `user_audio/${user.uid}/audio`
       );
 
       await addDoc(audioCollectionRef, {
-        videoUrl, // ビデオのURL
-        audioUrl: downloadURL, // 音声ファイルのURL
-        thumbnailUrl, // サムネイル画像のURL
-        createdAt: Date.now(), // 現在の日時をタイムスタンプで保存
-        isPublic: true, // 公開かどうか
+        videoUrl,
+        audioUrl: downloadURL,
+        thumbnailUrl,
+        createdAt: Date.now(),
+        isPublic: true,
       });
 
-      console.log("音声がFirebaseに新規保存されました:", downloadURL);
-      alert("音声が保存されました！");
+      console.log(
+        "音声とサムネイルがFirebaseに新規保存されました:",
+        downloadURL
+      );
+      alert("音声とサムネイルが保存されました！");
     } catch (err) {
       console.error("音声の保存中にエラーが発生しました:", err);
       alert("エラーが発生しました。もう一度やり直してください。");
     } finally {
-      setIsSaving(false); // 保存中フラグを解除
+      setIsSaving(false);
     }
   };
 
-  // 録音データを保存
   const saveAudio = () => {
     if (audioChunksRef.current.length === 0) {
       console.error("保存できる音声データがありません");
       return;
     }
 
-    setIsSaving(true); // 保存中フラグを設定
     const audioBlob = new Blob(audioChunksRef.current, {
-      type: "audio/mp4", // 保存形式をmp4に変更
+      type: "audio/webm",
     });
     uploadAudioToFirebase(audioBlob);
+  };
+
+  const playAudioWithVideo = () => {
+    if (audioRef.current && videoRef.current) {
+      audioRef.current.play();
+      videoRef.current.play();
+    }
   };
 
   return (
@@ -270,7 +221,7 @@ const Onsei_sakusei2 = () => {
             width="100%"
             controlsList="nodownload"
             crossOrigin="anonymous"
-            onEnded={stopRecording} // 動画が終了したときに録音を停止
+            onEnded={stopRecording}
           >
             <source src={videoUrl as string} type="video/mp4" />
             お使いのブラウザは動画タグをサポートしていません。
@@ -280,7 +231,6 @@ const Onsei_sakusei2 = () => {
         )}
       </div>
 
-      {/* 録音した音声を再生するaudio要素 */}
       <audio ref={audioRef} controls hidden />
 
       <div
@@ -300,7 +250,6 @@ const Onsei_sakusei2 = () => {
 
       <div className={styles.box}>
         <div className={styles.onseisaiseibox}>
-          {/* 音声と動画を一緒に再生 */}
           <button className={styles.onseisaisei} onClick={playAudioWithVideo}>
             音声動画再生
           </button>
@@ -308,8 +257,8 @@ const Onsei_sakusei2 = () => {
       </div>
       <div
         className={styles.hozonbox}
-        onClick={saveAudio} // hozonbox全体がクリックされたときに保存処理を実行
-        style={{ cursor: isSaving ? "not-allowed" : "pointer" }} // 保存中はクリックできないように視覚的に変化
+        onClick={saveAudio}
+        style={{ cursor: isSaving ? "not-allowed" : "pointer" }}
       >
         {isSaving ? "保存中..." : "保存"}
       </div>

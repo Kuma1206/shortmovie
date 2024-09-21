@@ -171,7 +171,7 @@ const Dougaichiran = () => {
                     audioRefs.current[index] = el!;
                   }} // 各音声要素を配列に参照
                 >
-                  <source src={video.audioUrl} type="audio/wav" />
+                  <source src={video.audioUrl} type="audio/mp3" />
                   お使いのブラウザは音声タグをサポートしていません。
                 </audio>
               </div>

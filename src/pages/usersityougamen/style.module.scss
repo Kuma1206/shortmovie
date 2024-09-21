@@ -88,7 +88,7 @@
   border: none;
 }
 
-.hozon {
+.onseisaiseibox {
   width: 70px;
   height: 30px;
   border-radius: 5px;
@@ -97,10 +97,13 @@
   color: #dbdada;
   font-size: 16px;
   font-weight: 400;
+  position: fixed;
+  top: 20%;
+  left: 42%;
   z-index: 9999;
 }
 
-.hozonbox {
+.onseisaiseiboxbox {
   display: flex;
   justify-content: center;
   margin: 10px;
@@ -138,7 +141,6 @@
   border-radius: 5px; /* 角丸 */
 }
 
-
 .onseidouga {
   width: 120px;
   height: 30px;
@@ -150,7 +152,6 @@
   font-weight: 400;
   z-index: 9999;
 }
-
 
 ///トルグ
 .togglebox {
@@ -214,3 +215,14 @@
   transform: translateX(-50%); /* 左右の中央に揃える */
   z-index: 2000;
 }
+
+.audioplayer {
+  position: fixed; /* fixedにして最前面に配置 */
+  top: 10px; /* 必要に応じて位置を調整 */
+  left: 10px;
+  z-index: 10000; /* 最前面に表示するために十分大きな値を設定 */
+  background-color: #4e76aa;
+  padding: 10px; /* 要素の周りに余白を追加 */
+  border-radius: 5px; /* 角を丸くする */
+}
+
