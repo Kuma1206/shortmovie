@@ -1,8 +1,7 @@
 .moviebox {
   display: flex;
-  justify-content: space-around;
-  align-items: center;
-  list-style: none;
+  justify-content: center; /* 中央に揃える */
+  align-items: center; /* 垂直方向も中央に揃える */
   background-color: #000;
   position: fixed;
   top: 0;
@@ -12,6 +11,8 @@
   z-index: 1000;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+
+
 
 .mainbox1 {
   display: flex;
