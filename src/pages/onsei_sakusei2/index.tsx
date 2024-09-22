@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/router";
 import styles from "./style.module.scss";
 import WeuiClose2Outlined from "@/components/Backbutton";
@@ -7,15 +7,13 @@ import { FaMicrophone } from "react-icons/fa";
 import { getAuth } from "firebase/auth";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getFirestore, addDoc, collection } from "firebase/firestore";
-import { app } from "@/firebase/client"; // Firebaseの初期化コードをインポート
-import { FFmpeg } from "@ffmpeg/ffmpeg";
-import { fetchFile } from "@ffmpeg/util";
+import { app } from "@/firebase/client";
+import { FFmpeg } from "@ffmpeg/ffmpeg"; // 崩さないインポート
+import { fetchFile } from "@ffmpeg/util"; // 崩さないインポート
 
 const auth = getAuth(app);
 const storage = getStorage(app);
 const firestore = getFirestore(app);
-
-const ffmpeg = new FFmpeg();
 
 const Onsei_sakusei2 = () => {
   const router = useRouter();
@@ -26,6 +24,23 @@ const Onsei_sakusei2 = () => {
   const audioChunksRef = useRef<Blob[]>([]);
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const [ffmpeg, setFFmpeg] = useState<any>(null); // FFmpegインスタンスを状態として管理
+  const [ffmpegLoaded, setFfmpegLoaded] = useState(false); // FFmpegがロード済みかを管理
+
+  // useEffectでクライアントサイドのみffmpeg.wasmをロード
+  useEffect(() => {
+    const loadFFmpeg = async () => {
+      const ffmpegInstance = new FFmpeg();
+      await ffmpegInstance.load();
+      setFFmpeg(ffmpegInstance);
+      setFfmpegLoaded(true);
+    };
+
+    if (typeof window !== "undefined") {
+      // クライアントサイドでのみFFmpegをロード
+      loadFFmpeg();
+    }
+  }, []);
 
   const startRecording = async () => {
     const user = auth.currentUser;
@@ -40,7 +55,7 @@ const Onsei_sakusei2 = () => {
       });
 
       const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: "audio/webm", // webm形式に変更
+        mimeType: "audio/webm",
       });
       mediaRecorderRef.current = mediaRecorder;
       audioChunksRef.current = [];
@@ -108,7 +123,7 @@ const Onsei_sakusei2 = () => {
       const ctx = canvas.getContext("2d");
 
       // 動画の1秒後にフレームをキャプチャ
-      videoElement.currentTime = 1; // 1秒後のフレームをキャプチャ
+      videoElement.currentTime = 1;
 
       const handleSeeked = () => {
         if (ctx) {
@@ -144,8 +159,9 @@ const Onsei_sakusei2 = () => {
 
   // 動画と音声を結合する関数
   const mergeAudioVideo = async (audioBlob: Blob, videoUrl: string) => {
-    if (!ffmpeg.loaded) {
-      await ffmpeg.load();
+    if (!ffmpegLoaded) {
+      console.error("FFmpeg is not loaded yet.");
+      return null;
     }
 
     const audioFile = "audio.webm";
@@ -207,7 +223,7 @@ const Onsei_sakusei2 = () => {
 
       await addDoc(videoCollectionRef, {
         videoUrl: downloadURL,
-        thumbnailUrl, // サムネイルURLをFirestoreに保存
+        thumbnailUrl,
         createdAt: Date.now(),
         isPublic: true,
       });
@@ -235,7 +251,7 @@ const Onsei_sakusei2 = () => {
       type: "audio/webm",
     });
 
-    // 1. サムネイルを先にキャプチャしてFirebaseに保存
+    // 1. サムネイルをキャプチャしてFirebaseに保存
     const thumbnailDataUrl = await captureThumbnail();
     const thumbnailUrl = await uploadThumbnailToFirebase(
       thumbnailDataUrl || ""
@@ -245,10 +261,14 @@ const Onsei_sakusei2 = () => {
     const mergedBlob = await mergeAudioVideo(audioBlob, videoUrl as string);
 
     // 3. 結合された動画とサムネイルをFirebaseに保存
-    if (thumbnailUrl !== null) {
-      await saveMergedVideoToFirebase(mergedBlob, thumbnailUrl);
+    if (mergedBlob !== null) {
+      if (thumbnailUrl !== null) {
+        await saveMergedVideoToFirebase(mergedBlob, thumbnailUrl);
+      } else {
+        console.error("Thumbnail URL is null");
+      }
     } else {
-      console.error("Thumbnail URL is null");
+      console.error("Merged Blob is null");
     }
   };
 
