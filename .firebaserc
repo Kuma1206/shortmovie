@@ -1,9 +1,1 @@
-{
-  "projects": {
-    "default": "osmproject-34e1b",
-    ">staging": "osmproject-34e1b"
-  },
-  "targets": {},
-  "etags": {},
-  "dataconnectEmulatorConfig": {}
-}
+
