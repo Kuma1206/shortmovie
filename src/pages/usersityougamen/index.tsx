@@ -24,11 +24,11 @@ const Usersityougamen = () => {
             const data = videoDoc.data();
             setChecked(data.isPublic || false); // FirestoreのisPublicの値を設定
           } else {
-            console.error("指定された動画のドキュメントが存在しません。");
+            console.error("指定された動画のドキュメントが存在しません");
           }
         } catch (error) {
           console.error(
-            "Firestoreから動画データを取得する際にエラーが発生しました。:",
+            "Firestoreから動画データを取得する際にエラーが発生しました:",
             error
           );
         }
