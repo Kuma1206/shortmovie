@@ -91,7 +91,6 @@ const Usersityougamen = () => {
                   zIndex: 10,
                 }}
               >
-                <WebAudioPlayer audioUrl={audioUrl as string} />
               </div>
             ) : (
               <p>音声が選択されていません。</p>

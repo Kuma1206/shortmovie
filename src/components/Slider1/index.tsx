@@ -15,44 +15,44 @@ const Slider1 = () => {
       try {
         console.log("Fetching audio and video data...");
 
-        // user_audio コレクションのすべてのユーザーUIDを取得
-        const userAudioCollection = collection(db, "user_audio");
-        const userDocs = await getDocs(userAudioCollection);
+        // user_videos コレクションのすべてのユーザーUIDを取得
+        const userVideosCollection = collection(db, "user_videos");
+        const userDocs = await getDocs(userVideosCollection);
 
-        const allPublicAudios: any[] = [];
+        const allPublicVideos: any[] = [];
 
-        // 各ユーザーのaudioサブコレクションを取得してフィルタリング
+        // 各ユーザーの videos サブコレクションを取得してフィルタリング
         for (const userDoc of userDocs.docs) {
           const userId = userDoc.id; // 各ユーザーのUID
-          const audioCollectionRef = collection(
+          const videosCollectionRef = collection(
             db,
-            `user_audio/${userId}/audio`
+            `user_videos/${userId}/videos`
           );
 
-          // audioサブコレクション内でisPublic == true のドキュメントを取得
-          const audioQuery = query(
-            audioCollectionRef,
+          // videosサブコレクション内でisPublic == true のドキュメントを取得
+          const videosQuery = query(
+            videosCollectionRef,
             where("isPublic", "==", true)
           );
-          const audioSnapshot = await getDocs(audioQuery);
+          const videoSnapshot = await getDocs(videosQuery);
 
           // 取得した公開ドキュメントをリストに追加
-          audioSnapshot.forEach((doc) => {
-            const audioData = doc.data();
+          videoSnapshot.forEach((doc) => {
+            const videoData = doc.data();
 
             // Firestoreから取得したデータがnullまたは削除済みでないことを確認
-            if (audioData.audioUrl && audioData.videoUrl) {
-              allPublicAudios.push({
-                audioId: doc.id,
-                videoUrl: audioData.videoUrl,
-                audioUrl: audioData.audioUrl,
+            if (videoData.videoUrl && videoData.audioUrl) {
+              allPublicVideos.push({
+                videoUrl: videoData.videoUrl,
+                audioUrl: videoData.audioUrl,
+                thumbnailUrl: videoData.thumbnailUrl || videoData.videoUrl, // サムネイルがあればそれを使う、なければvideoUrlを使う
               });
             }
           });
         }
 
-        // 公開されている音声付き動画をセット
-        setVideos(allPublicAudios);
+        // 公開されている動画をセット
+        setVideos(allPublicVideos);
       } catch (error) {
         console.error("Error fetching audio and video data: ", error);
       }
@@ -60,12 +60,6 @@ const Slider1 = () => {
 
     fetchAudioAndVideos();
   }, []);
-
-  useEffect(() => {
-    videos.forEach((video) => {
-      console.log("Video URL: ", video.videoUrl);
-    });
-  }, [videos]);
 
   const handlePlay = (index: number) => {
     // video 再生時に対応する audio を再生
@@ -94,7 +88,7 @@ const Slider1 = () => {
       <Carousel responsive={responsive}>
         {videos.length > 0 ? (
           videos.map((video, index) => (
-            <div key={video.audioId} className={styles.itembox}>
+            <div key={index} className={styles.itembox}>
               <Link
                 href={{
                   pathname: `/usersityougamen`,
@@ -111,7 +105,7 @@ const Slider1 = () => {
                     controls={false} // 動画のコントロールを無効にする
                     onPlay={() => handlePlay(index)} // 再生時に音声を再生
                     onPause={() => handlePause(index)} // 停止時に音声を停止
-                    poster={video.videoUrl} // 動画のサムネイルとしてポスターを表示
+                    poster={video.thumbnailUrl} // サムネイルとしてポスターを表示
                   >
                     お使いのブラウザはvideoタグをサポートしていません。
                   </video>
