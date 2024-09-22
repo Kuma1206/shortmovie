@@ -20,12 +20,24 @@ if (getApps().length === 0) {
 
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp(); 
 
-
 // Firebase関連機能をエクスポート
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 export const auth = getAuth(app);
 export const functions = getFunctions(app); // 必要に応じてリージョン指定も可能
+
+// プロフィール画像をアップロードし、そのURLを取得する関数
+export const uploadProfileImage = async (file: File): Promise<string> => {
+  const userId = auth.currentUser?.uid;
+  if (!userId) {
+    throw new Error("ユーザーが認証されていません。");
+  }
+
+  const storageRef = ref(storage, `profileImages/${userId}/${file.name}`);
+  await uploadBytes(storageRef, file);
+  const downloadURL = await getDownloadURL(storageRef);
+  return downloadURL;
+};
 
 // Firestoreに動画データを確実に保存するためのトランザクション関数
 export const saveVideoDataWithTransaction = async (
@@ -66,7 +78,6 @@ export const saveVideoDataWithTransaction = async (
     throw error;
   }
 };
-
 
 // 音声ファイルをアップロードし、そのURLを取得して Firestore に動画リンクとユーザー情報も保存
 export const uploadAudioAndSaveUrl = async (
@@ -119,6 +130,21 @@ export const uploadAudioAndSaveUrl = async (
       console.error('Error updating document status:', deleteError);
     }
     throw error;
+  }
+};
+
+// プロフィール画像をアップロードし、そのURLを取得する関数
+export const updateUserProfile = async (imageUrl: string) => {
+  const userId = auth.currentUser?.uid;
+
+  if (userId) {
+    await setDoc(
+      doc(db, "users", userId),
+      { photoURL: imageUrl },
+      { merge: true } // 既存のドキュメントにマージする場合
+    );
+  } else {
+    console.error("ユーザーIDが取得できませんでした。");
   }
 };
 
