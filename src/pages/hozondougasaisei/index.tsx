@@ -67,11 +67,8 @@ const Hozondougasaisei = () => {
     }
 
     try {
-      const videoDocRef = doc(
-        db,
-        `user_videos/${userId}/videos`,
-        videoDocId as string
-      );
+      const videoDocRef = doc(db, "videos", videoDocId as string);
+
       await updateDoc(videoDocRef, { isPublic: newChecked });
       console.log("isPublicが正常に保存されました。");
     } catch (error) {

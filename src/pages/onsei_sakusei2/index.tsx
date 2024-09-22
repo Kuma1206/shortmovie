@@ -6,8 +6,8 @@ import Link from "next/link";
 import { FaMicrophone } from "react-icons/fa";
 import { getAuth } from "firebase/auth";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { getFirestore, addDoc, collection } from "firebase/firestore";
-import { app } from "@/firebase/client";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { app, saveVideoDataWithTransaction } from "@/firebase/client"; // トランザクション関数をインポート
 import { FFmpeg } from "@ffmpeg/ffmpeg"; // 崩さないインポート
 import { fetchFile } from "@ffmpeg/util"; // 崩さないインポート
 
@@ -37,8 +37,7 @@ const Onsei_sakusei2 = () => {
     };
 
     if (typeof window !== "undefined") {
-      // クライアントサイドでのみFFmpegをロード
-      loadFFmpeg();
+      loadFFmpeg(); // クライアントサイドでのみFFmpegをロード
     }
   }, []);
 
@@ -122,8 +121,7 @@ const Onsei_sakusei2 = () => {
 
       const ctx = canvas.getContext("2d");
 
-      // 動画の1秒後にフレームをキャプチャ
-      videoElement.currentTime = 1;
+      videoElement.currentTime = 1; // 動画の1秒後にフレームをキャプチャ
 
       const handleSeeked = () => {
         if (ctx) {
@@ -154,7 +152,7 @@ const Onsei_sakusei2 = () => {
     const response = await fetch(thumbnailDataUrl);
     const blob = await response.blob();
     const snapshot = await uploadBytes(thumbnailStorageRef, blob);
-    return getDownloadURL(snapshot.ref);
+    return getDownloadURL(snapshot.ref); // サムネイルのURLを返す
   };
 
   // 動画と音声を結合する関数
@@ -194,7 +192,8 @@ const Onsei_sakusei2 = () => {
     return mergedBlob;
   };
 
-  // 動画とサムネイルをFirebaseに保存
+  // 動画とサムネイルをFirebaseに保存し、トランザクションでFireStoreに保存
+  // 動画とサムネイルをFirebaseに保存し、Firestoreに保存する関数
   const saveMergedVideoToFirebase = async (
     mergedBlob: Blob,
     thumbnailUrl: string
@@ -213,23 +212,24 @@ const Onsei_sakusei2 = () => {
         `user_videos/${user.uid}/${mergedVideoFileName}`
       );
 
+      // 動画ファイルをFirebase Storageにアップロード
       const snapshot = await uploadBytes(mergedVideoRef, mergedBlob);
       const downloadURL = await getDownloadURL(snapshot.ref);
 
-      const videoCollectionRef = collection(
-        firestore,
-        `user_videos/${user.uid}/videos`
-      );
+      // Firestoreのvideosコレクションに動画データを保存
+      const videoCollectionRef = doc(firestore, "videos", mergedVideoFileName);
 
-      await addDoc(videoCollectionRef, {
-        videoUrl: downloadURL,
-        thumbnailUrl,
+      await setDoc(videoCollectionRef, {
+        userId: user.uid,
+        videoUrl: downloadURL, // 動画のURL
+        thumbnailUrl: thumbnailUrl, // サムネイルのURL
+        isPublic: true, // デフォルトで公開状態
         createdAt: Date.now(),
-        isPublic: true,
+        status: "ready",
       });
 
       console.log(
-        "結合された動画とサムネイルがFirebaseに保存されました:",
+        "結合された動画とサムネイルがFirebaseに保存され、Firestoreに保存されました:",
         downloadURL
       );
       alert("結合された動画とサムネイルが保存されました！");
@@ -241,6 +241,7 @@ const Onsei_sakusei2 = () => {
     }
   };
 
+  // サムネイルと動画を保存するための呼び出し
   const saveAudio = async () => {
     if (audioChunksRef.current.length === 0) {
       console.error("保存できる音声データがありません");
@@ -261,14 +262,10 @@ const Onsei_sakusei2 = () => {
     const mergedBlob = await mergeAudioVideo(audioBlob, videoUrl as string);
 
     // 3. 結合された動画とサムネイルをFirebaseに保存
-    if (mergedBlob !== null) {
-      if (thumbnailUrl !== null) {
-        await saveMergedVideoToFirebase(mergedBlob, thumbnailUrl);
-      } else {
-        console.error("Thumbnail URL is null");
-      }
+    if (mergedBlob !== null && thumbnailUrl !== null) {
+      await saveMergedVideoToFirebase(mergedBlob, thumbnailUrl);
     } else {
-      console.error("Merged Blob is null");
+      console.error("動画の結合またはサムネイルの取得に失敗しました。");
     }
   };
 
