@@ -45,7 +45,7 @@ const Hozondougasaisei = () => {
         }
       } catch (error) {
         console.error(
-          "FirestoreからisPublicを取得する際にエラーが発生しました。:",
+          "FirestoreからisPublicを取得する際にエラーが発生しました:",
           error
         );
       } finally {
