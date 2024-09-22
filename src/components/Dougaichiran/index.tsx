@@ -19,38 +19,27 @@ const auth = getAuth(app);
 interface VideoData {
   id: string;
   videoUrl: string;
-  audioUrl: string;
   thumbnailUrl?: string; // サムネイルURLを追加
 }
 
 const Dougaichiran = () => {
   const [videoList, setVideoList] = useState<VideoData[]>([]);
-  const [loading, setLoading] = useState(true); // ローディング状態
-  const audioRefs = useRef<HTMLAudioElement[]>([]); // 複数の音声を参照するための配列
-
-  useEffect(() => {
-    // videoListが更新されるたびにaudioRefsをクリア
-    audioRefs.current = [];
-  }, [videoList]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchVideos = async (userId: string) => {
-      // コレクションのパスを修正
-      const audioCollectionRef = collection(
+      const videoCollectionRef = collection(
         firestore,
-        `user_audio/${userId}/audio`
+        `user_videos/${userId}/videos`
       );
 
-      const unsubscribe = onSnapshot(audioCollectionRef, (snapshot) => {
+      const unsubscribe = onSnapshot(videoCollectionRef, (snapshot) => {
         const videoData = snapshot.docs
           .map((doc) => ({ id: doc.id, ...doc.data() } as VideoData))
-          .filter((data) => {
-            // Firestoreからのリンクが削除されているか確認
-            return data.videoUrl && data.audioUrl;
-          });
+          .filter((data) => data.videoUrl); // videoUrl が存在するデータのみ取得
 
-        setVideoList(videoData); // 削除されたリンクはvideoListに含まれない
-        setLoading(false); // ローディング完了
+        setVideoList(videoData);
+        setLoading(false);
       });
 
       return () => unsubscribe();
@@ -60,41 +49,27 @@ const Dougaichiran = () => {
       if (user) {
         fetchVideos(user.uid);
       } else {
-        setVideoList([]); // 空のリストをセット
-        setLoading(false); // ローディングを解除
+        setVideoList([]);
+        setLoading(false);
       }
     });
 
     return () => unsubscribe();
   }, []);
 
-  const handlePlay = (index: number) => {
-    // video 再生時に対応する audio を再生
-    if (audioRefs.current[index]) {
-      audioRefs.current[index].play();
-    }
-  };
-
-  const handlePause = (index: number) => {
-    // video 停止時に対応する audio も停止
-    if (audioRefs.current[index]) {
-      audioRefs.current[index].pause();
-    }
-  };
-
   const handleDelete = async (videoId: string) => {
     if (window.confirm("削除しますか？")) {
       try {
         const videoDocRef = doc(
           firestore,
-          `user_audio/${auth.currentUser?.uid}/audio`,
+          `user_videos/${auth.currentUser?.uid}/videos`,
           videoId
         );
 
-        // FirestoreからaudioURLとvideoURLを削除
+        // FirestoreからvideoUrlとthumbnailUrlを削除
         await updateDoc(videoDocRef, {
-          audioUrl: deleteField(),
           videoUrl: deleteField(),
+          thumbnailUrl: deleteField(), // サムネイルも削除
         });
 
         // moveboxを削除
@@ -107,7 +82,6 @@ const Dougaichiran = () => {
       } catch (error) {
         console.error("エラーが発生しました:", error);
 
-        // moveboxを削除
         const movebox = document.getElementById(`movebox-${videoId}`);
         if (movebox) {
           movebox.remove();
@@ -117,13 +91,13 @@ const Dougaichiran = () => {
   };
 
   if (loading) {
-    return <p>読み込み中...</p>; // ローディング表示
+    return <p>読み込み中...</p>;
   }
 
   return (
     <div className={styles.mainbox}>
       {videoList.length > 0 ? (
-        videoList.map((video, index) => (
+        videoList.map((video) => (
           <div
             id={`movebox-${video.id}`}
             key={video.id}
@@ -134,9 +108,8 @@ const Dougaichiran = () => {
                 pathname: "/hozondougasaisei",
                 query: {
                   videoUrl: video.videoUrl,
-                  audioUrl: video.audioUrl,
                   userId: auth.currentUser?.uid, // userIdをクエリパラメータとして追加
-                  audioDocId: video.id, // audioDocIdをクエリパラメータとして追加
+                  videoDocId: video.id, // videoDocIdをクエリパラメータとして追加
                 },
               }}
             >
@@ -165,15 +138,6 @@ const Dougaichiran = () => {
                 ) : (
                   <p>サムネイルがありません</p>
                 )}
-
-                <audio
-                  ref={(el) => {
-                    audioRefs.current[index] = el!;
-                  }} // 各音声要素を配列に参照
-                >
-                  <source src={video.audioUrl} type="audio/mp3" />
-                  お使いのブラウザは音声タグをサポートしていません。
-                </audio>
               </div>
             </Link>
           </div>

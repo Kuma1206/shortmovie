@@ -16,6 +16,7 @@ const storage = getStorage(app);
 const firestore = getFirestore(app);
 
 const ffmpeg = new FFmpeg();
+
 const Onsei_sakusei2 = () => {
   const router = useRouter();
   const { videoUrl } = router.query;
@@ -107,7 +108,7 @@ const Onsei_sakusei2 = () => {
       const ctx = canvas.getContext("2d");
 
       // 動画の1秒後にフレームをキャプチャ
-      videoElement.currentTime = 1;
+      videoElement.currentTime = 1; // 1秒後のフレームをキャプチャ
 
       const handleSeeked = () => {
         if (ctx) {
@@ -141,8 +142,47 @@ const Onsei_sakusei2 = () => {
     return getDownloadURL(snapshot.ref);
   };
 
-  // 音声データをMP3に変換してFirebaseにアップロード
-  const uploadAudioToFirebase = async (audioBlob: Blob) => {
+  // 動画と音声を結合する関数
+  const mergeAudioVideo = async (audioBlob: Blob, videoUrl: string) => {
+    if (!ffmpeg.loaded) {
+      await ffmpeg.load();
+    }
+
+    const audioFile = "audio.webm";
+    const videoFile = "video.mp4";
+    const outputFile = "output.mp4";
+
+    const videoResponse = await fetch(videoUrl);
+    const videoBlob = await videoResponse.blob();
+
+    await ffmpeg.writeFile(videoFile, await fetchFile(videoBlob));
+    await ffmpeg.writeFile(audioFile, await fetchFile(audioBlob));
+
+    await ffmpeg.exec([
+      "-i",
+      videoFile,
+      "-i",
+      audioFile,
+      "-c:v",
+      "copy",
+      "-c:a",
+      "aac",
+      "-strict",
+      "experimental",
+      outputFile,
+    ]);
+
+    const data = await ffmpeg.readFile(outputFile);
+    const mergedBlob = new Blob([data], { type: "video/mp4" });
+
+    return mergedBlob;
+  };
+
+  // 動画とサムネイルをFirebaseに保存
+  const saveMergedVideoToFirebase = async (
+    mergedBlob: Blob,
+    thumbnailUrl: string
+  ) => {
     try {
       setIsSaving(true);
 
@@ -151,48 +191,41 @@ const Onsei_sakusei2 = () => {
         throw new Error("ユーザーが認証されていません");
       }
 
-      const audioFileName = `audio_${Date.now()}.mp3`;
-      const audioStorageRef = ref(
+      const mergedVideoFileName = `merged_video_${Date.now()}.mp4`;
+      const mergedVideoRef = ref(
         storage,
-        `user_audio/${user.uid}/${audioFileName}`
+        `user_videos/${user.uid}/${mergedVideoFileName}`
       );
 
-      const snapshot = await uploadBytes(audioStorageRef, audioBlob);
+      const snapshot = await uploadBytes(mergedVideoRef, mergedBlob);
       const downloadURL = await getDownloadURL(snapshot.ref);
 
-      // サムネイルをキャプチャしてFirebaseにアップロード
-      const thumbnailDataUrl = await captureThumbnail();
-      const thumbnailUrl = await uploadThumbnailToFirebase(
-        thumbnailDataUrl || ""
-      );
-
-      const audioCollectionRef = collection(
+      const videoCollectionRef = collection(
         firestore,
-        `user_audio/${user.uid}/audio`
+        `user_videos/${user.uid}/videos`
       );
 
-      await addDoc(audioCollectionRef, {
-        videoUrl,
-        audioUrl: downloadURL,
-        thumbnailUrl,
+      await addDoc(videoCollectionRef, {
+        videoUrl: downloadURL,
+        thumbnailUrl, // サムネイルURLをFirestoreに保存
         createdAt: Date.now(),
         isPublic: true,
       });
 
       console.log(
-        "音声とサムネイルがFirebaseに新規保存されました:",
+        "結合された動画とサムネイルがFirebaseに保存されました:",
         downloadURL
       );
-      alert("音声とサムネイルが保存されました！");
+      alert("結合された動画とサムネイルが保存されました！");
     } catch (err) {
-      console.error("音声の保存中にエラーが発生しました:", err);
+      console.error("動画の保存中にエラーが発生しました:", err);
       alert("エラーが発生しました。もう一度やり直してください。");
     } finally {
       setIsSaving(false);
     }
   };
 
-  const saveAudio = () => {
+  const saveAudio = async () => {
     if (audioChunksRef.current.length === 0) {
       console.error("保存できる音声データがありません");
       return;
@@ -201,7 +234,22 @@ const Onsei_sakusei2 = () => {
     const audioBlob = new Blob(audioChunksRef.current, {
       type: "audio/webm",
     });
-    uploadAudioToFirebase(audioBlob);
+
+    // 1. サムネイルを先にキャプチャしてFirebaseに保存
+    const thumbnailDataUrl = await captureThumbnail();
+    const thumbnailUrl = await uploadThumbnailToFirebase(
+      thumbnailDataUrl || ""
+    );
+
+    // 2. 音声と動画を結合
+    const mergedBlob = await mergeAudioVideo(audioBlob, videoUrl as string);
+
+    // 3. 結合された動画とサムネイルをFirebaseに保存
+    if (thumbnailUrl !== null) {
+      await saveMergedVideoToFirebase(mergedBlob, thumbnailUrl);
+    } else {
+      console.error("Thumbnail URL is null");
+    }
   };
 
   const playAudioWithVideo = () => {

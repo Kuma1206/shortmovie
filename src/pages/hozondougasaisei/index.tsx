@@ -5,77 +5,39 @@ import WeuiClose2Outlined from "@/components/Backbutton";
 import Link from "next/link";
 import "react-toggle/style.css";
 import Toggle from "react-toggle";
-import { doc, updateDoc, getDoc, deleteDoc } from "firebase/firestore";
-import { db, storage } from "@/firebase/client";
+import { doc, updateDoc, getDoc, deleteDoc } from "firebase/firestore"; // Firestoreの関数をインポート
+import { db, storage } from "@/firebase/client"; // Firebase初期化設定をインポート
 import { deleteObject, ref } from "firebase/storage";
 
 const Hozondougasaisei = () => {
   const [checked, setChecked] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [canAutoPlay, setCanAutoPlay] = useState(false);
-  const [audioError, setAudioError] = useState(false); // オーディオエラー状態を追加
   const router = useRouter();
-  const { userId, videoUrl, audioUrl, audioDocId, videoDocId } = router.query;
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const audioRef = useRef<HTMLAudioElement>(null);
-
-  // iOS Safariでのオーディオコンテキスト初期化
-  useEffect(() => {
-    const initAudioContext = () => {
-      const audioContext = new AudioContext();
-      audioContext
-        .resume()
-        .then(() => {
-          setCanAutoPlay(true);
-        })
-        .catch((error) => {
-          console.error("Failed to initialize audio context:", error);
-          alert(
-            `オーディオコンテキストの初期化に失敗しました: ${error.message}`
-          );
-          setAudioError(true); // エラー状態を設定
-        });
-    };
-
-    document.addEventListener("touchstart", initAudioContext, { once: true });
-    document.addEventListener("click", initAudioContext, { once: true });
-
-    return () => {
-      document.removeEventListener("touchstart", initAudioContext);
-      document.removeEventListener("click", initAudioContext);
-    };
-  }, []);
-
-  // バックグラウンド再生の設定
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.setAttribute("playsinline", "");
-      videoRef.current.setAttribute("webkit-playsinline", "");
-    }
-    if (audioRef.current) {
-      audioRef.current.setAttribute("playsinline", "");
-      audioRef.current.setAttribute("webkit-playsinline", "");
-    }
-  }, []);
+  const { userId, videoUrl, videoDocId } = router.query; // クエリパラメータからuserIdとvideoDocIdを取得
+  const videoRef = useRef<HTMLVideoElement>(null); // video要素を参照
 
   // FirestoreからisPublicを取得してトグルの初期値を設定
   useEffect(() => {
     const fetchIsPublic = async () => {
-      if (!userId || !audioDocId) {
+      if (!userId || !videoDocId) {
+        console.error("userId または videoDocId が存在しません。");
         setLoading(false);
         return;
       }
 
       try {
-        const audioDocRef = doc(
-          db,
-          `user_audio/${userId}/audio`,
-          audioDocId as string
+        console.log(
+          `Fetching document for userId: ${userId}, videoDocId: ${videoDocId}`
         );
-        const audioDoc = await getDoc(audioDocRef);
-        if (audioDoc.exists()) {
-          const data = audioDoc.data();
-          setChecked(data?.isPublic || false);
+        const videoDocRef = doc(
+          db,
+          `user_videos/${userId}/videos`,
+          videoDocId as string
+        );
+        const videoDoc = await getDoc(videoDocRef);
+        if (videoDoc.exists()) {
+          const data = videoDoc.data();
+          setChecked(data?.isPublic || false); // Firestoreの値を使用
         } else {
           console.error("指定されたドキュメントが存在しません。");
         }
@@ -92,79 +54,69 @@ const Hozondougasaisei = () => {
     if (router.isReady) {
       fetchIsPublic();
     }
-  }, [router.isReady, userId, audioDocId]);
+  }, [router.isReady, userId, videoDocId]);
 
   // トグルの変更時に呼び出される関数
   const handleToggleChange = async () => {
     const newChecked = !checked;
     setChecked(newChecked);
 
-    if (!userId || !audioDocId) {
+    if (!userId || !videoDocId) {
+      console.error("userIdまたはvideoDocIdが存在しません。");
       return;
     }
 
     try {
-      const audioDocRef = doc(
+      const videoDocRef = doc(
         db,
-        `user_audio/${userId}/audio`,
-        audioDocId as string
+        `user_videos/${userId}/videos`,
+        videoDocId as string
       );
-      await updateDoc(audioDocRef, { isPublic: newChecked });
+      await updateDoc(videoDocRef, { isPublic: newChecked });
+      console.log("isPublicが正常に保存されました。");
     } catch (error) {
       console.error("Firestoreへの保存中にエラーが発生しました:", error);
     }
   };
 
-  // 再生と一時停止の処理
   const handlePlay = () => {
-    if (videoRef.current && audioRef.current && canAutoPlay) {
-      audioRef.current.currentTime = videoRef.current.currentTime;
-      audioRef.current.play().catch((error) => {
-        setAudioError(true);
-        alert("音声再生エラー: " + error.message);
-      });
+    if (videoRef.current) {
+      videoRef.current.currentTime = 0; // 動画の再生位置をリセット
+      videoRef.current.play();
     }
   };
 
   const handlePause = () => {
-    if (audioRef.current) {
-      audioRef.current.pause();
+    if (videoRef.current) {
+      videoRef.current.pause();
     }
   };
 
-  const handleAudioError = (
-    event: React.SyntheticEvent<HTMLAudioElement, Event>
-  ) => {
-    alert(`音声の読み込み中にエラーが発生しました: ${event}`);
-  };
-
-  const handleCanPlayThrough = () => {
-    console.log("音声が再生可能です");
-  };
-
-  // 音声ファイルとFirestoreのドキュメントを削除する関数
-  const handleDeleteAudio = async () => {
+  // 動画ファイルとFirestoreのドキュメントを削除する関数
+  const handleDeleteVideo = async () => {
     const confirmation = window.confirm("削除しますか？");
 
-    if (confirmation && userId && audioDocId && audioUrl) {
+    if (confirmation && userId && videoDocId && videoUrl) {
       try {
-        const audioRefInStorage = ref(storage, audioUrl as string);
-        await deleteObject(audioRefInStorage);
+        // Firebase Storageから動画ファイルを削除
+        const videoRefInStorage = ref(storage, videoUrl as string);
+        await deleteObject(videoRefInStorage);
 
-        const audioDocRef = doc(
+        // Firestoreから動画データを削除
+        const videoDocRef = doc(
           db,
-          `user_audio/${userId}/audio`,
-          audioDocId as string
+          `user_videos/${userId}/videos`,
+          videoDocId as string
         );
-        await deleteDoc(audioDocRef);
-
-        const videoDocRef = doc(db, "videos", videoDocId as string);
         await deleteDoc(videoDocRef);
 
+        console.log("動画データが正常に削除されました。");
         alert("削除しました");
+
+        // ページをリダイレクト
         router.push("/seisaku_page2");
       } catch (error) {
-        console.error("音声データの削除中にエラーが発生しました:", error);
+        console.error("動画データの削除中にエラーが発生しました:", error);
       }
     }
   };
@@ -183,7 +135,6 @@ const Hozondougasaisei = () => {
               controls
               width="100%"
               muted
-              playsInline
               controlsList="nodownload"
               onPlay={handlePlay}
               onPause={handlePause}
@@ -191,19 +142,6 @@ const Hozondougasaisei = () => {
               <source src={videoUrl as string} type="video/mp4" />
               お使いのブラウザは動画タグをサポートしていません。
             </video>
-
-            {audioUrl && (
-              <audio
-                ref={audioRef}
-                controls
-                hidden
-                onError={handleAudioError}
-                onCanPlayThrough={handleCanPlayThrough}
-              >
-                <source src={audioUrl as string} type="audio/mp3" />
-                お使いのブラウザは音声タグをサポートしていません。
-              </audio>
-            )}
           </>
         ) : (
           <p>動画が選択されていません。</p>
@@ -220,11 +158,11 @@ const Hozondougasaisei = () => {
         />
       </div>
 
-      {/* <div className={styles.sakujobox}>
-        <button className={styles.sakujo} onClick={handleDeleteAudio}>
+      <div className={styles.sakujobox}>
+        <button className={styles.sakujo} onClick={handleDeleteVideo}>
           削除
         </button>
-      </div> */}
+      </div>
 
       <Link href="/seisaku_page2">
         <WeuiClose2Outlined className={styles.backbutton} />
