@@ -48,12 +48,14 @@ const Mypage_profile = () => {
           await setDoc(
             doc(db, "users", userId),
             { photoURL: imageUrl },
-            { merge: true } // 既存のドキュメントにマージする場合
+            { merge: true }
           );
         }
       } catch (error) {
         console.error("画像のアップロードに失敗しました:", error);
       }
+    } else {
+      console.log("ファイルが選択されていません。");
     }
   };
 
