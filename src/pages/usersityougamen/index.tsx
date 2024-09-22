@@ -28,7 +28,7 @@ const Usersityougamen = () => {
           }
         } catch (error) {
           console.error(
-            "Firestoreから動画データを取得する際にエラーが発生しました:",
+            "Firestoreから動画データを取得する際にエラーが発生しました。:",
             error
           );
         }
