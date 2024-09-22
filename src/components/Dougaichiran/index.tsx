@@ -77,9 +77,9 @@ const Dougaichiran = () => {
           audioUrl: deleteField(), // audioUrlも削除
         });
 
-        console.log("リンクと動画が削除されました");
+        console.log("リンクと動画が削除されました。");
       } catch (error) {
-        console.error("エラーが発生しました:", error);
+        console.error("エラーが発生しました。:", error);
       }
     }
   };
